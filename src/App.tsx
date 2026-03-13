@@ -3,6 +3,7 @@ import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
 import { SyntaxPane } from './components/Preview/SyntaxPane'
 import { SectionList } from './components/Editor/SectionList'
+import { Canvas } from './components/Canvas/Canvas'
 
 export function App() {
   const store = useGanttStore()
@@ -43,17 +44,9 @@ export function App() {
           <SectionList store={store} />
         </div>
 
-        {/* Canvas panel placeholder */}
-        <div style={{
-          overflow: 'auto',
-          background: 'var(--color-bg)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--color-text-muted)',
-          fontSize: 13,
-        }}>
-          Canvas panel — Phase 4
+        {/* Canvas panel */}
+        <div style={{ overflow: 'hidden', background: 'var(--color-bg)' }}>
+          <Canvas store={store} />
         </div>
       </div>
 
