@@ -1,16 +1,24 @@
+import { useState } from 'react'
 import './styles/global.css'
 import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
-import { Preview } from './components/Preview/Preview'
-import { SectionList } from './components/Editor/SectionList'
+import { TaskList } from './components/Editor/TaskList'
+import { TaskDetailPanel } from './components/Editor/TaskDetailPanel'
 import { Canvas } from './components/Canvas/Canvas'
+import { Preview } from './components/Preview/Preview'
 
 export function App() {
   const store = useGanttStore()
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
   const handleExport = () => {
     void navigator.clipboard.writeText(store.mermaidSyntax)
   }
+
+  // Deselect if the task was deleted
+  const taskExists = selectedTaskId !== null &&
+    store.chart.sections.some(s => s.tasks.some(t => t.id === selectedTaskId))
+  const resolvedSelected = taskExists ? selectedTaskId : null
 
   return (
     <div style={{
@@ -28,29 +36,48 @@ export function App() {
         onExport={handleExport}
       />
 
-      {/* Main area: Editor + Canvas (Phase 3 & 4) */}
+      {/* Main area: TaskList + Canvas + TaskDetailPanel */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'var(--editor-width) 1fr',
+        gridTemplateColumns: `var(--editor-width) 1fr${resolvedSelected ? ' var(--detail-width)' : ''}`,
         overflow: 'hidden',
         borderBottom: '1px solid var(--color-border)',
       }}>
-        {/* Editor panel */}
+        {/* Left: compact task list */}
         <div style={{
           borderRight: '1px solid var(--color-border)',
           background: 'var(--color-surface)',
           overflow: 'hidden',
         }}>
-          <SectionList store={store} />
+          <TaskList
+            store={store}
+            selectedTaskId={resolvedSelected}
+            onSelectTask={setSelectedTaskId}
+          />
         </div>
 
-        {/* Canvas panel */}
-        <div style={{ overflow: 'hidden', background: 'var(--color-bg)' }}>
+        {/* Middle: canvas */}
+        <div style={{ overflow: 'hidden' }}>
           <Canvas store={store} />
         </div>
+
+        {/* Right: task detail panel (shown when task selected) */}
+        {resolvedSelected && (
+          <div style={{
+            borderLeft: '1px solid var(--color-border)',
+            background: 'var(--color-surface)',
+            overflow: 'hidden',
+          }}>
+            <TaskDetailPanel
+              store={store}
+              taskId={resolvedSelected}
+              onClose={() => setSelectedTaskId(null)}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Preview: Syntax + Mermaid rendered output */}
+      {/* Preview */}
       <div style={{
         borderTop: '1px solid var(--color-border)',
         overflow: 'hidden',

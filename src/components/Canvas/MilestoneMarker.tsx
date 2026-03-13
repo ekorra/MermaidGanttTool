@@ -13,10 +13,11 @@ export const STATUS_COLORS: Record<string, string> = {
 interface MilestoneMarkerProps {
   x: number
   label: string
+  color?: string
 }
 
-export function MilestoneMarker({ x, label }: MilestoneMarkerProps) {
-  const color = STATUS_COLORS['milestone']!
+export function MilestoneMarker({ x, label, color }: MilestoneMarkerProps) {
+  const resolvedColor = color ?? STATUS_COLORS['milestone']!
   const cx = x
   const cy = TASK_ROW_HEIGHT / 2
 
@@ -29,15 +30,15 @@ export function MilestoneMarker({ x, label }: MilestoneMarkerProps) {
           ${cx},${cy + DIAMOND_SIZE}
           ${cx - DIAMOND_SIZE},${cy}
         `}
-        fill={color}
-        stroke="#fff"
+        fill={resolvedColor}
+        stroke="rgba(255,255,255,0.4)"
         strokeWidth={1.5}
       />
       <text
         x={cx + DIAMOND_SIZE + 4}
         y={cy + 4}
         fontSize={11}
-        fill="var(--color-text)"
+        fill="#cdd6f4"
       >
         {label}
       </text>

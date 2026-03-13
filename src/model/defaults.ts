@@ -13,6 +13,7 @@ export function createTask(partial?: Partial<GanttTask>): GanttTask {
     endDate: null,
     duration: '3d',
     afterTaskId: null,
+    color: null,
     ...partial,
   }
 }
@@ -58,6 +59,7 @@ export function createChart(title = 'My Project'): GanttChart {
             endDate: null,
             duration: '5d',
             afterTaskId: null,
+            color: '#06d6a0',
           },
           {
             id: task2Id,
@@ -67,6 +69,7 @@ export function createChart(title = 'My Project'): GanttChart {
             endDate: null,
             duration: '7d',
             afterTaskId: task1Id,
+            color: '#4361ee',
           },
           {
             id: task3Id,
@@ -76,6 +79,7 @@ export function createChart(title = 'My Project'): GanttChart {
             endDate: null,
             duration: null,
             afterTaskId: task2Id,
+            color: '#f4a261',
           },
         ],
       },

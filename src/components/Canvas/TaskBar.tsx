@@ -20,7 +20,7 @@ export function TaskBar({ task, x, width, pxPerDay, onDragEnd, onResizeEnd }: Ta
   const drag = useDrag({ onDragEnd, pxPerDay })
   const resize = useResize({ onResizeEnd, pxPerDay })
 
-  const color = STATUS_COLORS[task.status ?? 'default'] ?? STATUS_COLORS['default']!
+  const color = task.color ?? STATUS_COLORS[task.status ?? 'default'] ?? STATUS_COLORS['default']!
   const barWidth = Math.max(MIN_WIDTH, width)
   const y = BAR_PADDING_Y
 

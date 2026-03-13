@@ -3,12 +3,13 @@ import { addDays, formatDate } from '../../utils/dateUtils'
 
 interface TimelineHeaderProps {
   scale: TimelineScale
+  dark?: boolean
 }
 
 export const HEADER_HEIGHT = 40
 const TICK_INTERVAL_DAYS = 7 // one tick per week
 
-export function TimelineHeader({ scale }: TimelineHeaderProps) {
+export function TimelineHeader({ scale, dark }: TimelineHeaderProps) {
   const ticks: Array<{ x: number; label: string }> = []
   let cursor = new Date(scale.startDate)
 
@@ -27,8 +28,8 @@ export function TimelineHeader({ scale }: TimelineHeaderProps) {
       zIndex: 10,
       height: HEADER_HEIGHT,
       width: scale.canvasWidth,
-      background: 'var(--color-surface)',
-      borderBottom: '2px solid var(--color-border)',
+      background: dark ? '#12122a' : 'var(--color-surface)',
+      borderBottom: dark ? '1px solid rgba(255,255,255,0.08)' : '2px solid var(--color-border)',
       flexShrink: 0,
     }}>
       {ticks.map(tick => (
@@ -48,13 +49,13 @@ export function TimelineHeader({ scale }: TimelineHeaderProps) {
           <div style={{
             width: 1,
             height: 8,
-            background: 'var(--color-border)',
+            background: dark ? 'rgba(255,255,255,0.15)' : 'var(--color-border)',
             marginTop: 'auto',
           }} />
           {/* Label */}
           <span style={{
             fontSize: 10,
-            color: 'var(--color-text-muted)',
+            color: dark ? 'rgba(255,255,255,0.4)' : 'var(--color-text-muted)',
             whiteSpace: 'nowrap',
             paddingLeft: 3,
             paddingBottom: 4,

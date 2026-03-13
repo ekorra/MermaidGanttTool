@@ -9,7 +9,10 @@ import { MilestoneMarker, TASK_ROW_HEIGHT } from './MilestoneMarker'
 import { DependencyArrow, ArrowDefs } from './DependencyArrow'
 
 const SECTION_HEADER_HEIGHT = 28
-const SECTION_LABEL_FILL = '#4361ee22'
+const CANVAS_BG = '#1a1a2e'
+const SECTION_BG = 'rgba(255,255,255,0.04)'
+const GRID_COLOR = 'rgba(255,255,255,0.07)'
+const SECTION_TEXT_COLOR = 'rgba(255,255,255,0.4)'
 
 interface CanvasProps {
   store: GanttStore
@@ -25,13 +28,14 @@ export function Canvas({ store }: CanvasProps) {
     type: 'section' | 'task'
     sectionId: string
     taskId?: string
+    sectionTitle?: string
     y: number
   }
   const rows: RowInfo[] = []
   let currentY = HEADER_HEIGHT
 
   for (const section of chart.sections) {
-    rows.push({ type: 'section', sectionId: section.id, y: currentY })
+    rows.push({ type: 'section', sectionId: section.id, sectionTitle: section.title, y: currentY })
     currentY += SECTION_HEADER_HEIGHT
     for (const task of section.tasks) {
       rows.push({ type: 'task', sectionId: section.id, taskId: task.id, y: currentY })
@@ -41,8 +45,8 @@ export function Canvas({ store }: CanvasProps) {
   const svgHeight = Math.max(currentY - HEADER_HEIGHT, 100)
 
   return (
-    <div style={{ overflow: 'auto', height: '100%', position: 'relative' }}>
-      <TimelineHeader scale={scale} />
+    <div style={{ overflow: 'auto', height: '100%', position: 'relative', background: CANVAS_BG }}>
+      <TimelineHeader scale={scale} dark />
 
       <svg
         data-testid="canvas-svg"
@@ -52,6 +56,9 @@ export function Canvas({ store }: CanvasProps) {
       >
         <ArrowDefs />
 
+        {/* Background */}
+        <rect x={0} y={0} width={scale.canvasWidth} height={svgHeight} fill={CANVAS_BG} />
+
         {/* Weekly grid lines */}
         {Array.from({ length: Math.ceil(scale.totalDays / 7) }, (_, i) => i * 7).map(dayOffset => (
           <line
@@ -60,7 +67,7 @@ export function Canvas({ store }: CanvasProps) {
             y1={0}
             x2={dayOffset * scale.pxPerDay}
             y2={svgHeight}
-            stroke="var(--color-border)"
+            stroke={GRID_COLOR}
             strokeWidth={1}
           />
         ))}
@@ -70,14 +77,25 @@ export function Canvas({ store }: CanvasProps) {
 
           if (row.type === 'section') {
             return (
-              <rect
-                key={`sec-bg-${row.sectionId}`}
-                x={0}
-                y={svgY}
-                width={scale.canvasWidth}
-                height={SECTION_HEADER_HEIGHT}
-                fill={SECTION_LABEL_FILL}
-              />
+              <g key={`sec-bg-${row.sectionId}`}>
+                <rect
+                  x={0}
+                  y={svgY}
+                  width={scale.canvasWidth}
+                  height={SECTION_HEADER_HEIGHT}
+                  fill={SECTION_BG}
+                />
+                <text
+                  x={12}
+                  y={svgY + SECTION_HEADER_HEIGHT / 2 + 4}
+                  fontSize={11}
+                  fontWeight={700}
+                  fill={SECTION_TEXT_COLOR}
+                  style={{ textTransform: 'uppercase', letterSpacing: 1 }}
+                >
+                  {row.sectionTitle?.toUpperCase()}
+                </text>
+              </g>
             )
           }
 
@@ -95,7 +113,7 @@ export function Canvas({ store }: CanvasProps) {
           if (task.status === 'milestone') {
             return (
               <g key={task.id} transform={`translate(0, ${svgY})`}>
-                <MilestoneMarker x={x} label={task.label} />
+                <MilestoneMarker x={x} label={task.label} color={task.color ?? undefined} />
               </g>
             )
           }

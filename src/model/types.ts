@@ -38,6 +38,11 @@ export interface GanttTask {
    * Takes priority over startDate on export.
    */
   afterTaskId: string | null
+  /**
+   * UI-only color for the task bar (hex string). Not exported to Mermaid syntax.
+   * Falls back to STATUS_COLORS when null.
+   */
+  color: string | null
 }
 
 // ─── Section ─────────────────────────────────────────────────────────────────
