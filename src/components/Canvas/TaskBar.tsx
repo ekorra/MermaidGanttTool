@@ -28,6 +28,7 @@ export function TaskBar({ task, x, width, pxPerDay, onDragEnd, onResizeEnd }: Ta
     <g style={{ cursor: 'grab' }}>
       {/* Main bar — handles drag */}
       <rect
+        data-testid={`task-bar-${task.label}`}
         x={x}
         y={y}
         width={barWidth - 6}

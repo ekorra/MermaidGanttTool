@@ -45,6 +45,7 @@ export function Canvas({ store }: CanvasProps) {
       <TimelineHeader scale={scale} />
 
       <svg
+        data-testid="canvas-svg"
         width={scale.canvasWidth}
         height={svgHeight}
         style={{ display: 'block', overflow: 'visible' }}
