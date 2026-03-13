@@ -2,6 +2,7 @@ import './styles/global.css'
 import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
 import { SyntaxPane } from './components/Preview/SyntaxPane'
+import { SectionList } from './components/Editor/SectionList'
 
 export function App() {
   const store = useGanttStore()
@@ -33,18 +34,13 @@ export function App() {
         overflow: 'hidden',
         borderBottom: '1px solid var(--color-border)',
       }}>
-        {/* Editor panel placeholder */}
+        {/* Editor panel */}
         <div style={{
           borderRight: '1px solid var(--color-border)',
           background: 'var(--color-surface)',
-          overflow: 'auto',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--color-text-muted)',
-          fontSize: 13,
+          overflow: 'hidden',
         }}>
-          Editor panel — Phase 3
+          <SectionList store={store} />
         </div>
 
         {/* Canvas panel placeholder */}
