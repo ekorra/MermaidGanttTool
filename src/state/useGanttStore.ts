@@ -24,48 +24,76 @@ export interface GanttStore {
   moveTask: (taskId: string, fromSectionId: string, toSectionId: string, newIndex: number) => void
 }
 
+const STORAGE_KEY = 'mermaid-gantt-chart'
+
+function loadFromStorage(): GanttChart | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as GanttChart
+  } catch {
+    return null
+  }
+}
+
+function saveToStorage(chart: GanttChart): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(chart))
+  } catch {
+    // Storage quota exceeded or private mode — silently ignore
+  }
+}
+
 export function useGanttStore(initial?: GanttChart): GanttStore {
-  const [chart, setChart] = useState<GanttChart>(() => initial ?? createChart())
+  const [chart, setChart] = useState<GanttChart>(() => initial ?? loadFromStorage() ?? createChart())
+
+  const persistingSetChart: typeof setChart = useCallback((action) => {
+    setChart(prev => {
+      const next = typeof action === 'function' ? action(prev) : action
+      saveToStorage(next)
+      return next
+    })
+  }, [])
 
   const mermaidSyntax = exportToMermaid(chart)
 
   const updateChartMeta = useCallback((patch: Partial<Omit<GanttChart, 'sections'>>) => {
-    setChart(prev => ({ ...prev, ...patch }))
-  }, [])
+    persistingSetChart(prev => ({ ...prev, ...patch }))
+  }, [persistingSetChart])
 
   const addSection = useCallback((title?: string) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: [...prev.sections, createSection(title)],
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const updateSection = useCallback((sectionId: string, patch: Partial<Omit<GanttSection, 'tasks'>>) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: prev.sections.map(s => s.id === sectionId ? { ...s, ...patch } : s),
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const deleteSection = useCallback((sectionId: string) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: prev.sections.filter(s => s.id !== sectionId),
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const reorderSections = useCallback((fromIndex: number, toIndex: number) => {
-    setChart(prev => {
+    persistingSetChart(prev => {
       const sections = [...prev.sections]
       const [moved] = sections.splice(fromIndex, 1)
       if (moved === undefined) return prev
       sections.splice(toIndex, 0, moved)
       return { ...prev, sections }
     })
-  }, [])
+  }, [persistingSetChart])
 
   const addTask = useCallback((sectionId: string, partial?: Partial<GanttTask>) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: prev.sections.map(s =>
         s.id === sectionId
@@ -73,10 +101,10 @@ export function useGanttStore(initial?: GanttChart): GanttStore {
           : s
       ),
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const updateTask = useCallback((sectionId: string, taskId: string, patch: Partial<GanttTask>) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: prev.sections.map(s =>
         s.id === sectionId
@@ -84,10 +112,10 @@ export function useGanttStore(initial?: GanttChart): GanttStore {
           : s
       ),
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const deleteTask = useCallback((sectionId: string, taskId: string) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: prev.sections.map(s =>
         s.id === sectionId
@@ -95,10 +123,10 @@ export function useGanttStore(initial?: GanttChart): GanttStore {
           : s
       ),
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const reorderTask = useCallback((sectionId: string, fromIndex: number, toIndex: number) => {
-    setChart(prev => ({
+    persistingSetChart(prev => ({
       ...prev,
       sections: prev.sections.map(s => {
         if (s.id !== sectionId) return s
@@ -109,10 +137,10 @@ export function useGanttStore(initial?: GanttChart): GanttStore {
         return { ...s, tasks }
       }),
     }))
-  }, [])
+  }, [persistingSetChart])
 
   const moveTask = useCallback((taskId: string, fromSectionId: string, toSectionId: string, newIndex: number) => {
-    setChart(prev => {
+    persistingSetChart(prev => {
       let taskToMove: GanttTask | undefined
       const sections = prev.sections.map(s => {
         if (s.id !== fromSectionId) return s
@@ -131,7 +159,7 @@ export function useGanttStore(initial?: GanttChart): GanttStore {
         }),
       }
     })
-  }, [])
+  }, [persistingSetChart])
 
   return {
     chart,
