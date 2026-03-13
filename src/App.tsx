@@ -1,7 +1,7 @@
 import './styles/global.css'
 import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
-import { SyntaxPane } from './components/Preview/SyntaxPane'
+import { Preview } from './components/Preview/Preview'
 import { SectionList } from './components/Editor/SectionList'
 import { Canvas } from './components/Canvas/Canvas'
 
@@ -50,14 +50,14 @@ export function App() {
         </div>
       </div>
 
-      {/* Preview: Syntax pane (Phase 5 adds MermaidRenderer) */}
+      {/* Preview: Syntax + Mermaid rendered output */}
       <div style={{
         borderTop: '1px solid var(--color-border)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
       }}>
-        <SyntaxPane syntax={store.mermaidSyntax} />
+        <Preview syntax={store.mermaidSyntax} />
       </div>
     </div>
   )
