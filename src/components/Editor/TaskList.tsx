@@ -53,6 +53,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
               <button
                 onClick={() => deleteSection(section.id)}
                 title="Delete section"
+                aria-label={`Slett seksjon ${section.title}`}
                 style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 15, cursor: 'pointer', padding: '0 2px', lineHeight: 1 }}
               >
                 ×
@@ -72,6 +73,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
               <button
                 onClick={() => deleteSection(section.id)}
                 title="Delete ungrouped section"
+                aria-label="Slett seksjon uten navn"
                 style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 13, cursor: 'pointer', lineHeight: 1 }}
               >
                 ×

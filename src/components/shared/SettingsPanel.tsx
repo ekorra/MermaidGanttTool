@@ -1,4 +1,6 @@
+import { useRef, useEffect } from 'react'
 import type { GanttChart, DateFormat } from '../../model/types'
+import { useEscapeKey } from '../../utils/useEscapeKey'
 
 interface SettingsPanelProps {
   chart: GanttChart
@@ -30,9 +32,16 @@ const inputStyle: React.CSSProperties = {
 }
 
 export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useEscapeKey(onClose)
+  useEffect(() => { closeRef.current?.focus() }, [])
+
   return (
     /* Backdrop */
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Diagraminnstillinger"
       style={{
         position: 'fixed',
         inset: 0,
@@ -64,7 +73,9 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontWeight: 700, fontSize: 15 }}>Diagraminnstillinger</span>
           <button
+            ref={closeRef}
             onClick={onClose}
+            aria-label="Lukk innstillinger"
             style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
           >
             ×

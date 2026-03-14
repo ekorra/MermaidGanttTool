@@ -1,10 +1,20 @@
+import { useRef, useEffect } from 'react'
+import { useEscapeKey } from '../../utils/useEscapeKey'
+
 interface InfoPanelProps {
   onClose: () => void
 }
 
 export function InfoPanel({ onClose }: InfoPanelProps) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useEscapeKey(onClose)
+  useEffect(() => { closeRef.current?.focus() }, [])
+
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Om MermaidGanttTool"
       onClick={onClose}
       style={{
         position: 'fixed',
@@ -36,7 +46,9 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontWeight: 700, fontSize: 16 }}>Om MermaidGanttTool</span>
           <button
+            ref={closeRef}
             onClick={onClose}
+            aria-label="Lukk"
             style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
           >
             ×

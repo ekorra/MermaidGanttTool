@@ -45,6 +45,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
       <button
         onClick={onSettingsOpen}
         title="Diagraminnstillinger"
+        aria-label="Diagraminnstillinger"
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',
@@ -64,6 +65,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
       <button
         onClick={onInfoOpen}
         title="Om appen"
+        aria-label="Om appen"
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',
@@ -84,6 +86,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
       <button
         onClick={onToggleTheme}
         title={isDark ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
+        aria-label={isDark ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',

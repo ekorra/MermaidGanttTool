@@ -82,6 +82,7 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
         <span style={{ fontWeight: 700, fontSize: 13 }}>Rediger oppgave</span>
         <button
           onClick={onClose}
+          aria-label="Lukk detaljpanel"
           style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
         >
           ×
@@ -230,6 +231,7 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
       <div style={{ marginTop: 'auto', paddingTop: 8 }}>
         <button
           onClick={handleDelete}
+          aria-label={`Slett oppgave ${task.label}`}
           style={{
             width: '100%',
             padding: '8px',

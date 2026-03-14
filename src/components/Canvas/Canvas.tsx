@@ -57,6 +57,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
 
       <svg
         data-testid="canvas-svg"
+        aria-hidden="true"
         width={scale.canvasWidth}
         height={svgHeight}
         style={{ display: 'block', overflow: 'visible' }}
