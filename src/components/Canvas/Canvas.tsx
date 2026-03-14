@@ -10,7 +10,6 @@ import { MilestoneMarker, TASK_ROW_HEIGHT } from './MilestoneMarker'
 import { DependencyArrow, ArrowDefs } from './DependencyArrow'
 
 const SECTION_HEADER_HEIGHT = 28
-const TODAY_COLOR = '#ff6b6b'
 
 interface CanvasProps {
   store: GanttStore
