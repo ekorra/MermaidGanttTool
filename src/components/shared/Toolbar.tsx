@@ -3,9 +3,11 @@ interface ToolbarProps {
   onTitleChange: (title: string) => void
   onSettingsOpen: () => void
   onExport: () => void
+  previewOpen: boolean
+  onTogglePreview: () => void
 }
 
-export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport }: ToolbarProps) {
+export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport, previewOpen, onTogglePreview }: ToolbarProps) {
   return (
     <header style={{
       height: 'var(--toolbar-height)',
@@ -36,7 +38,6 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport }: Tool
         }}
       />
 
-      {/* Settings button */}
       <button
         onClick={onSettingsOpen}
         title="Diagraminnstillinger"
@@ -54,6 +55,29 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport }: Tool
         onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
       >
         ⚙
+      </button>
+
+      {/* Preview toggle */}
+      <button
+        onClick={onTogglePreview}
+        title={previewOpen ? 'Skjul preview' : 'Vis preview'}
+        style={{
+          padding: '5px 12px',
+          border: '1px solid var(--color-border)',
+          borderRadius: 4,
+          background: previewOpen ? 'var(--color-primary)' : 'var(--color-bg)',
+          color: previewOpen ? '#fff' : 'var(--color-text-muted)',
+          fontSize: 12,
+          fontWeight: 500,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 4,
+        }}
+        onMouseOver={e => { if (!previewOpen) e.currentTarget.style.borderColor = 'var(--color-primary)' }}
+        onMouseOut={e => { if (!previewOpen) e.currentTarget.style.borderColor = 'var(--color-border)' }}
+      >
+        Preview {previewOpen ? '▼' : '▲'}
       </button>
 
       <button
