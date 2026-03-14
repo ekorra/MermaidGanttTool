@@ -250,3 +250,25 @@ describe('date format conversion', () => {
     expect(result).not.toContain('15-03-2024')
   })
 })
+
+describe('milestone export', () => {
+  it('milestone with duration set still emits 0d', () => {
+    const chart = makeChart({
+      sections: [{
+        id: 'sec1', title: 'Phase 1',
+        tasks: [makeTask({ status: 'milestone', duration: '3d', endDate: null })],
+      }],
+    })
+    expect(exportToMermaid(chart)).toContain(':milestone, task_abc12345, 2024-01-01, 0d')
+  })
+
+  it('milestone with endDate set still emits 0d', () => {
+    const chart = makeChart({
+      sections: [{
+        id: 'sec1', title: 'Phase 1',
+        tasks: [makeTask({ status: 'milestone', duration: null, endDate: '2024-01-10' })],
+      }],
+    })
+    expect(exportToMermaid(chart)).toContain(':milestone, task_abc12345, 2024-01-01, 0d')
+  })
+})

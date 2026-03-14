@@ -9,7 +9,7 @@ import type { GanttChart, GanttSection, GanttTask, TaskStatus, DateFormat } from
  * Rules:
  * - afterTaskIds takes priority over startDate
  * - endDate takes priority over duration
- * - Milestones get "0d" duration when neither endDate nor duration is set
+ * - Milestones always get "0d" — overrides endDate and duration
  * - Sections with empty title emit tasks without a "section" header (ungrouped)
  * - crit+active / crit+done emit two comma-separated tags
  * - clickUrl emits "click <id> href \"<url>\"" directives
@@ -91,12 +91,14 @@ function formatTask(task: GanttTask, dateFormat: DateFormat): string {
     parts.push('0d')
   }
 
-  if (task.endDate !== null) {
+  // Milestone always gets 0d — overrides endDate/duration
+  if (task.status === 'milestone') {
+    parts.push('0d')
+  } else if (task.endDate !== null) {
     parts.push(toMermaidDate(task.endDate, dateFormat))
   } else if (task.duration !== null) {
     parts.push(task.duration)
-  } else if (task.status === 'milestone') {
-    parts.push('0d')
+
   } else {
     parts.push('1d')
   }

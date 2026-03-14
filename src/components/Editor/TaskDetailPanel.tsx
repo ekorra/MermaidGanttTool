@@ -104,7 +104,10 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
         <label style={fieldLabel}>Status</label>
         <select
           value={task.status ?? ''}
-          onChange={e => update({ status: (e.target.value as TaskStatus) || null })}
+          onChange={e => {
+            const s = (e.target.value as TaskStatus) || null
+            update(s === 'milestone' ? { status: s, duration: null, endDate: null } : { status: s })
+          }}
           style={inputStyle}
         >
           {STATUS_OPTIONS.map(o => (
