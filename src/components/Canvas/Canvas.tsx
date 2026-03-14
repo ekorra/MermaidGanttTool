@@ -3,16 +3,13 @@ import { useTimelineScale } from '../../hooks/useTimelineScale'
 import { resolveTaskPositions } from '../../utils/taskPositions'
 import { formatDate, addDays } from '../../utils/dateUtils'
 import { parseDurationDays } from '../../utils/durationUtils'
+import { isDarkActive } from '../../utils/theme'
 import { TimelineHeader, HEADER_HEIGHT } from './TimelineHeader'
 import { TaskBar } from './TaskBar'
 import { MilestoneMarker, TASK_ROW_HEIGHT } from './MilestoneMarker'
 import { DependencyArrow, ArrowDefs } from './DependencyArrow'
 
 const SECTION_HEADER_HEIGHT = 28
-const CANVAS_BG = '#1a1a2e'
-const SECTION_BG = 'rgba(255,255,255,0.04)'
-const GRID_COLOR = 'rgba(255,255,255,0.07)'
-const SECTION_TEXT_COLOR = 'rgba(255,255,255,0.4)'
 const TODAY_COLOR = '#ff6b6b'
 
 interface CanvasProps {
@@ -51,9 +48,11 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
   const todayX = chart.todayMarker ? scale.dateToX(new Date()) : null
   const allTasks = chart.sections.flatMap(s => s.tasks)
 
+  const isDark = isDarkActive()
+
   return (
-    <div style={{ overflow: 'auto', height: '100%', position: 'relative', background: CANVAS_BG }}>
-      <TimelineHeader scale={scale} dark />
+    <div style={{ overflow: 'auto', height: '100%', position: 'relative', background: 'var(--canvas-bg)' }}>
+      <TimelineHeader scale={scale} dark={isDark} />
 
       <svg
         data-testid="canvas-svg"
@@ -65,7 +64,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
       >
         <ArrowDefs />
 
-        <rect x={0} y={0} width={scale.canvasWidth} height={svgHeight} fill={CANVAS_BG} />
+        <rect x={0} y={0} width={scale.canvasWidth} height={svgHeight} style={{ fill: 'var(--canvas-bg)' }} />
 
         {/* Weekly grid lines */}
         {Array.from({ length: Math.ceil(scale.totalDays / 7) }, (_, i) => i * 7).map(dayOffset => (
@@ -73,7 +72,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
             key={dayOffset}
             x1={dayOffset * scale.pxPerDay} y1={0}
             x2={dayOffset * scale.pxPerDay} y2={svgHeight}
-            stroke={GRID_COLOR} strokeWidth={1}
+            style={{ stroke: 'var(--canvas-grid)' }} strokeWidth={1}
           />
         ))}
 
@@ -83,11 +82,10 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
           if (row.type === 'section') {
             return (
               <g key={`sec-bg-${row.sectionId}`}>
-                <rect x={0} y={svgY} width={scale.canvasWidth} height={SECTION_HEADER_HEIGHT} fill={SECTION_BG} />
+                <rect x={0} y={svgY} width={scale.canvasWidth} height={SECTION_HEADER_HEIGHT} style={{ fill: 'var(--canvas-section-bg)' }} />
                 <text
                   x={12} y={svgY + SECTION_HEADER_HEIGHT / 2 + 4}
-                  fontSize={11} fontWeight={700} fill={SECTION_TEXT_COLOR}
-                  style={{ textTransform: 'uppercase', letterSpacing: 1 }}
+                  fontSize={11} fontWeight={700} style={{ textTransform: 'uppercase', letterSpacing: 1, fill: 'var(--canvas-section-text)' }}
                 >
                   {row.sectionTitle?.toUpperCase()}
                 </text>
@@ -176,8 +174,8 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
         {/* Today marker */}
         {todayX !== null && todayX >= 0 && todayX <= scale.canvasWidth && (
           <g style={{ pointerEvents: 'none' }}>
-            <line x1={todayX} y1={0} x2={todayX} y2={svgHeight} stroke={TODAY_COLOR} strokeWidth={1.5} strokeDasharray="4 3" />
-            <text x={todayX + 4} y={12} fontSize={10} fill={TODAY_COLOR} fontWeight={600}>Today</text>
+            <line x1={todayX} y1={0} x2={todayX} y2={svgHeight} stroke="#ff6b6b" strokeWidth={1.5} strokeDasharray="4 3" />
+            <text x={todayX + 4} y={12} fontSize={10} fill="#ff6b6b" fontWeight={600}>Today</text>
           </g>
         )}
       </svg>

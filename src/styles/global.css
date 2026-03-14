@@ -26,6 +26,11 @@
 
   --swatch-border: transparent;
 
+  --canvas-bg: #eef0f5;
+  --canvas-grid: rgba(0, 0, 0, 0.07);
+  --canvas-section-bg: rgba(0, 0, 0, 0.05);
+  --canvas-section-text: rgba(0, 0, 0, 0.45);
+
   --toolbar-height: 48px;
   --editor-width: 260px;
   --detail-width: 240px;
@@ -60,6 +65,11 @@
     --badge-milestone-color: #fbd38d;
 
     --swatch-border: rgba(255, 255, 255, 0.18);
+
+    --canvas-bg: #1a1a2e;
+    --canvas-grid: rgba(255, 255, 255, 0.07);
+    --canvas-section-bg: rgba(255, 255, 255, 0.04);
+    --canvas-section-text: rgba(255, 255, 255, 0.4);
   }
 }
 
@@ -85,6 +95,11 @@
   --badge-milestone-color: #fbd38d;
 
   --swatch-border: rgba(255, 255, 255, 0.18);
+
+  --canvas-bg: #1a1a2e;
+  --canvas-grid: rgba(255, 255, 255, 0.07);
+  --canvas-section-bg: rgba(255, 255, 255, 0.04);
+  --canvas-section-text: rgba(255, 255, 255, 0.4);
 }
 
 /* Manual light override — force light even if OS is dark */
@@ -109,6 +124,11 @@
   --badge-milestone-color: #92400e;
 
   --swatch-border: transparent;
+
+  --canvas-bg: #eef0f5;
+  --canvas-grid: rgba(0, 0, 0, 0.07);
+  --canvas-section-bg: rgba(0, 0, 0, 0.05);
+  --canvas-section-text: rgba(0, 0, 0, 0.45);
 }
 
 button {
