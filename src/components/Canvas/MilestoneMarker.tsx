@@ -42,6 +42,7 @@ export function MilestoneMarker({ x, label, color, selected, onSelect }: Milesto
         />
       )}
       <polygon
+        data-testid={`milestone-diamond-${label}`}
         points={`
           ${cx},${cy - DIAMOND_SIZE}
           ${cx + DIAMOND_SIZE},${cy}

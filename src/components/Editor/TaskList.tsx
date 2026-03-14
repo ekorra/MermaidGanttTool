@@ -24,14 +24,17 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
   const hasUngrouped = chart.sections.some(s => s.title === '')
 
   return (
-    <div style={{
-      height: '100%',
-      overflow: 'auto',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '10px 8px',
-      gap: 8,
-    }}>
+    <div
+      data-testid="task-list"
+      style={{
+        height: '100%',
+        overflow: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '10px 8px',
+        gap: 8,
+      }}
+    >
       {chart.sections.map(section => (
         <div key={section.id}>
           {/* Section header — hidden for ungrouped (empty title) sections */}
@@ -90,6 +93,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
             return (
               <div
                 key={task.id}
+                data-testid={`task-item-${task.label}`}
                 onClick={() => onSelectTask(isSelected ? null : task.id)}
                 style={{
                   display: 'flex',
@@ -140,6 +144,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
 
           {/* Add task */}
           <button
+            data-testid="add-task"
             onClick={() => addTask(section.id)}
             style={{
               display: 'block',
@@ -164,6 +169,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
 
       {/* Add section */}
       <button
+        data-testid="add-section"
         onClick={() => addSection()}
         style={{
           marginTop: 4,

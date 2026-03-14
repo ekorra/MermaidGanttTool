@@ -105,6 +105,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
 
       {/* Preview toggle */}
       <button
+        data-testid="preview-toggle"
         onClick={onTogglePreview}
         title={previewOpen ? 'Skjul preview' : 'Vis preview'}
         style={{

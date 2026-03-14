@@ -16,7 +16,7 @@ export function DependencyArrow({ fromX, fromRowY, toX, toRowY }: DependencyArro
   const d = `M ${fromX} ${midY1} C ${midX} ${midY1}, ${midX} ${midY2}, ${toX} ${midY2}`
 
   return (
-    <g style={{ pointerEvents: 'none' }}>
+    <g data-testid="dependency-arrow" style={{ pointerEvents: 'none' }}>
       <path
         d={d}
         fill="none"

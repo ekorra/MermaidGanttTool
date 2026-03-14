@@ -61,6 +61,7 @@ export function MermaidRenderer({ syntax }: MermaidRendererProps) {
       )}
       <div
         ref={containerRef}
+        data-testid="mermaid-renderer"
         style={{
           padding: '12px 16px',
           minHeight: '100%',

@@ -69,14 +69,17 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      overflow: 'auto',
-      padding: 16,
-      gap: 14,
-    }}>
+    <div
+      data-testid="task-detail"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflow: 'auto',
+        padding: 16,
+        gap: 14,
+      }}
+    >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontWeight: 700, fontSize: 13 }}>Rediger oppgave</span>
@@ -93,6 +96,7 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
       <div>
         <label style={fieldLabel}>Navn</label>
         <input
+          data-testid="task-label-input"
           type="text"
           value={task.label}
           onChange={e => update({ label: e.target.value })}
@@ -104,6 +108,7 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
       <div>
         <label style={fieldLabel}>Status</label>
         <select
+          data-testid="task-status-select"
           value={task.status ?? ''}
           onChange={e => {
             const s = (e.target.value as TaskStatus) || null
@@ -230,6 +235,7 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
       {/* Delete */}
       <div style={{ marginTop: 'auto', paddingTop: 8 }}>
         <button
+          data-testid="task-delete"
           onClick={handleDelete}
           aria-label={`Slett oppgave ${task.label}`}
           style={{

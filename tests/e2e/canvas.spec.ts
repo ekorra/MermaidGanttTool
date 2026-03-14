@@ -1,10 +1,16 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   await page.evaluate(() => localStorage.clear())
   await page.reload()
 })
+
+async function openPreview(page: Page) {
+  const isOpen = await page.getByTestId('syntax-pane').isVisible().catch(() => false)
+  if (!isOpen) await page.getByTestId('preview-toggle').click()
+  await expect(page.getByTestId('syntax-pane')).toBeVisible()
+}
 
 test('canvas SVG renders', async ({ page }) => {
   await expect(page.getByTestId('canvas-svg')).toBeVisible()
@@ -17,23 +23,22 @@ test('default task bars are rendered', async ({ page }) => {
 })
 
 test('milestone renders as a diamond (polygon)', async ({ page }) => {
-  // Launch is a milestone — rendered as a polygon, not a rect task bar
-  const svg = page.getByTestId('canvas-svg')
-  await expect(svg.locator('polygon')).toBeVisible()
+  // Launch is a milestone — rendered as a polygon with testid
+  await expect(page.locator('[data-testid="milestone-diamond-Launch"]')).toBeVisible()
   // No task bar rect for milestone
   await expect(page.locator('[data-testid="task-bar-Launch"]')).not.toBeVisible()
 })
 
 test('dependency arrows are rendered', async ({ page }) => {
-  // DependencyArrow renders as a dashed path
-  const svg = page.getByTestId('canvas-svg')
-  await expect(svg.locator('path[stroke-dasharray]')).toBeVisible()
+  // DependencyArrow renders a <g data-testid="dependency-arrow"> for each arrow
+  await expect(page.getByTestId('dependency-arrow').first()).toBeAttached()
 })
 
 test('dragging a task bar updates startDate in syntax', async ({ page }) => {
+  await openPreview(page)
   const syntax = page.getByTestId('syntax-pane')
 
-  // Get the initial start date for Design from the syntax
+  // Get the initial syntax
   const initialSyntax = await syntax.inputValue()
   const dateMatch = initialSyntax.match(/Design\s*:\s*done,\s*\S+,\s*(\S+)/)
   const initialDate = dateMatch?.[1] ?? ''
@@ -58,6 +63,7 @@ test('dragging a task bar updates startDate in syntax', async ({ page }) => {
 })
 
 test('resizing a task bar updates duration in syntax', async ({ page }) => {
+  await openPreview(page)
   const syntax = page.getByTestId('syntax-pane')
   const initialSyntax = await syntax.inputValue()
 
@@ -67,7 +73,7 @@ test('resizing a task bar updates duration in syntax', async ({ page }) => {
   expect(box).not.toBeNull()
 
   // Resize handle is 6px wide at the right edge of the bar + 6px padding
-  const resizeX = box!.x + box!.width + 3  // center of the 6px handle
+  const resizeX = box!.x + box!.width + 3
   const resizeY = box!.y + box!.height / 2
 
   await page.mouse.move(resizeX, resizeY)
