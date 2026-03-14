@@ -4,11 +4,13 @@ A WYSIWYG web app for creating [Mermaid](https://mermaid.js.org/) Gantt diagrams
 
 ## Features
 
-- **Visual editor** — add sections and tasks with a form-based panel
-- **Interactive canvas** — drag task bars to move them, drag the right edge to resize
+- **Task list** — add, rename, and delete sections and tasks from the left panel
+- **Detail editor** — edit name, status, dates, duration, dependencies, color, and click URL per task
+- **Interactive canvas** — drag task bars to move them; drag left or right edge to resize
 - **Task dependencies** — link tasks with `after <taskId>` and see dependency arrows on the canvas
 - **Milestones** — render as diamonds on the timeline
-- **Task statuses** — `active`, `done`, `crit`, `milestone`
+- **Task statuses** — `active`, `done`, `crit`, and combined (`crit+active`, `crit+done`)
+- **Dark mode** — follows system preference with manual toggle in the toolbar
 - **Live preview** — switch between raw Mermaid syntax and the rendered diagram
 - **Export** — copy valid Mermaid syntax to clipboard in one click
 - **Persistence** — your diagram is saved automatically in `localStorage`
@@ -20,8 +22,9 @@ Open the app in a browser. No login or setup required.
 | Area | What you can do |
 |------|----------------|
 | **Toolbar** | Set the diagram title and date format |
-| **Editor (left)** | Add/rename/delete sections and tasks; set dates, duration, status, dependencies |
-| **Canvas (right)** | Drag tasks to reschedule; drag the right edge to resize duration |
+| **Task list (left)** | Add/rename/delete sections and tasks; click a task to open the detail editor |
+| **Detail editor (right)** | Edit task name, status, dates, duration, dependencies, color, and URL |
+| **Canvas (center)** | Drag tasks to reschedule; drag left/right edge to resize; click to select |
 | **Preview (bottom)** | Toggle between **Syntax** tab (copy-ready Mermaid) and **Preview** tab (rendered diagram) |
 
 ## Development
@@ -110,7 +113,7 @@ See [backlog/drafts/](backlog/drafts/) for planned features, including:
 - PNG export
 - Import from existing Mermaid syntax
 - Zoom control (pxPerDay slider)
-- Dark mode
+- Multilingual UI (English, Norwegian, Spanish, German)
 
 ## License
 
