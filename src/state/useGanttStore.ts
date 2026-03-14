@@ -30,12 +30,12 @@ const STORAGE_KEY = 'mermaid-gantt-chart'
 function migrateChart(raw: unknown): GanttChart {
   const data = raw as Record<string, unknown>
   return {
-    ...(data as GanttChart),
+    ...(data as unknown as GanttChart),
     weekday: (data['weekday'] as string | null | undefined) ?? null,
     sections: ((data['sections'] as unknown[]) ?? []).map(s => {
       const sec = s as Record<string, unknown>
       return {
-        ...(sec as GanttSection),
+        ...(sec as unknown as GanttSection),
         tasks: ((sec['tasks'] as unknown[]) ?? []).map(t => {
           const task = t as Record<string, unknown>
           // Migrate afterTaskId (old) → afterTaskIds (new)
@@ -44,7 +44,7 @@ function migrateChart(raw: unknown): GanttChart {
             ? (task['afterTaskIds'] as string[])
             : legacyId ? [legacyId] : []
           return {
-            ...(task as GanttTask),
+            ...(task as unknown as GanttTask),
             afterTaskIds,
             clickUrl: (task['clickUrl'] as string | null | undefined) ?? null,
             color: (task['color'] as string | null | undefined) ?? null,
