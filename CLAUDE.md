@@ -36,6 +36,22 @@ Task files live in `backlog/tasks/`. Decisions in `backlog/decisions/`. Drafts i
 
 **Workflow:** Create a task before starting non-trivial work → mark In Progress → mark Done before committing.
 
+### Task template (required before starting any non-trivial task)
+
+```markdown
+## Description
+[What needs to be built and why]
+
+## Acceptance Criteria
+- [ ] [Specific, testable condition]
+- [ ] [Another condition]
+
+## Definition of Done
+- [ ] Code implemented and TypeScript-clean
+- [ ] Tests written and passing (`npm run typecheck && npm run test:run`)
+- [ ] Committed and pushed
+```
+
 ---
 
 ## Architecture invariants
