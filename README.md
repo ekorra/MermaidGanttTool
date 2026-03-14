@@ -64,12 +64,42 @@ tests/
 - `useGanttStore` is the single source of truth
 - `document`/`window` access only in hooks and components (enables future browser extension port)
 
+## Backlog
+
+Tasks, decisions, and feature drafts are tracked with the [Backlog.md CLI](https://github.com/MrLesk/Backlog.md).
+
+```bash
+backlog board                   # Kanban overview — best starting point
+backlog task list               # List all tasks grouped by status
+backlog overview                # Stats and completion summary
+backlog task view <id>          # Details for a task  (e.g. backlog task view 24)
+backlog task create "<title>"   # Create a new task
+backlog task edit <id>          # Edit status, labels, assignee, etc.
+backlog draft list              # List feature drafts
+backlog decision list           # List architecture decisions (ADRs)
+```
+
+Files: `backlog/tasks/` · `backlog/decisions/` · `backlog/drafts/`
+
+### Starting a new task
+
+Create the task first and fill in **Description**, **Acceptance Criteria**, and **Definition of Done** before writing any code:
+
+```bash
+backlog task create "My feature"
+# edit the file in backlog/tasks/ to add description + AC + DoD
+backlog task edit <id> --status "In Progress"
+# ... implement ...
+backlog task edit <id> --status "Done"
+```
+
 ## Contributing
 
 1. Fork the repo and create a branch
-2. Make your changes — keep code, comments, and docs in **English**
-3. Run `npm run typecheck && npm test` — all checks must pass
-4. Open a pull request
+2. Create a backlog task for non-trivial work (see above)
+3. Keep code, comments, and docs in **English**
+4. Run `npm run typecheck && npm test` — all checks must pass
+5. Open a pull request
 
 Bug reports and feature ideas are welcome as [GitHub Issues](https://github.com/ekorra/MermaidGanttTool/issues).
 
