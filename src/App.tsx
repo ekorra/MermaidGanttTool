@@ -4,6 +4,7 @@ import { isDarkActive, toggleTheme } from './utils/theme'
 import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
 import { SettingsPanel } from './components/shared/SettingsPanel'
+import { InfoPanel } from './components/shared/InfoPanel'
 import { TaskList } from './components/Editor/TaskList'
 import { TaskDetailPanel } from './components/Editor/TaskDetailPanel'
 import { Canvas } from './components/Canvas/Canvas'
@@ -27,6 +28,7 @@ export function App() {
   const store = useGanttStore()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [infoOpen, setInfoOpen] = useState(false)
   const [isDark, setIsDark] = useState(() => isDarkActive())
 
   const handleToggleTheme = () => {
@@ -88,6 +90,7 @@ export function App() {
         title={store.chart.title}
         onTitleChange={title => store.updateChartMeta({ title })}
         onSettingsOpen={() => setSettingsOpen(true)}
+        onInfoOpen={() => setInfoOpen(true)}
         onExport={handleExport}
         previewOpen={previewOpen}
         onTogglePreview={togglePreview}
@@ -141,6 +144,8 @@ export function App() {
       {settingsOpen && (
         <SettingsPanel chart={store.chart} onUpdate={store.updateChartMeta} onClose={() => setSettingsOpen(false)} />
       )}
+
+      {infoOpen && <InfoPanel onClose={() => setInfoOpen(false)} />}
     </div>
   )
 }

@@ -2,6 +2,7 @@ interface ToolbarProps {
   title: string
   onTitleChange: (title: string) => void
   onSettingsOpen: () => void
+  onInfoOpen: () => void
   onExport: () => void
   previewOpen: boolean
   onTogglePreview: () => void
@@ -9,7 +10,7 @@ interface ToolbarProps {
   onToggleTheme: () => void
 }
 
-export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
+export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onExport, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
   return (
     <header style={{
       height: 'var(--toolbar-height)',
@@ -58,6 +59,26 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport, previe
         onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
       >
         ⚙
+      </button>
+
+      <button
+        onClick={onInfoOpen}
+        title="Om appen"
+        style={{
+          padding: '5px 10px',
+          border: '1px solid var(--color-border)',
+          borderRadius: 4,
+          background: 'var(--color-bg)',
+          color: 'var(--color-text-muted)',
+          fontSize: 15,
+          fontWeight: 700,
+          lineHeight: 1,
+          cursor: 'pointer',
+        }}
+        onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
+        onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
+      >
+        ?
       </button>
 
       <button
