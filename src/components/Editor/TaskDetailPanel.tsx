@@ -11,10 +11,12 @@ interface TaskDetailPanelProps {
 }
 
 const STATUS_OPTIONS: Array<{ value: TaskStatus | ''; label: string }> = [
-  { value: '',          label: 'Normal' },
-  { value: 'active',   label: 'Active' },
-  { value: 'done',     label: 'Done' },
-  { value: 'crit',     label: 'Critical' },
+  { value: '',           label: 'Normal' },
+  { value: 'active',    label: 'Active' },
+  { value: 'done',      label: 'Done' },
+  { value: 'crit',      label: 'Critical' },
+  { value: 'crit+active', label: 'Critical + Active' },
+  { value: 'crit+done',   label: 'Critical + Done' },
   { value: 'milestone', label: 'Milestone' },
 ]
 
@@ -57,6 +59,13 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
   const handleDelete = () => {
     deleteTask(section.id, task.id)
     onClose()
+  }
+
+  const toggleAfterTask = (depId: string, checked: boolean) => {
+    const ids = checked
+      ? [...task.afterTaskIds, depId]
+      : task.afterTaskIds.filter(id => id !== depId)
+    update({ afterTaskIds: ids })
   }
 
   return (
@@ -104,23 +113,37 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
         </select>
       </div>
 
-      {/* Starts after */}
-      <div>
-        <label style={fieldLabel}>Starter etter</label>
-        <select
-          value={task.afterTaskId ?? ''}
-          onChange={e => update({ afterTaskId: e.target.value || null })}
-          style={inputStyle}
-        >
-          <option value="">— ingen (bruk startdato) —</option>
-          {allOtherTasks.map(t => (
-            <option key={t.id} value={t.id}>{t.label}</option>
-          ))}
-        </select>
-      </div>
+      {/* After tasks (multi-select via checkboxes) */}
+      {allOtherTasks.length > 0 && (
+        <div>
+          <label style={fieldLabel}>Starter etter</label>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+            maxHeight: 120,
+            overflowY: 'auto',
+            border: '1px solid var(--color-border)',
+            borderRadius: 4,
+            padding: '4px 6px',
+            background: 'var(--color-bg)',
+          }}>
+            {allOtherTasks.map(t => (
+              <label key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={task.afterTaskIds.includes(t.id)}
+                  onChange={e => toggleAfterTask(t.id, e.target.checked)}
+                />
+                {t.label}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* Start date (only when no afterTaskId) */}
-      {task.afterTaskId === null && (
+      {/* Start date (only when no afterTaskIds) */}
+      {task.afterTaskIds.length === 0 && (
         <div>
           <label style={fieldLabel}>Start</label>
           <input
@@ -154,6 +177,18 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
             style={{ ...inputStyle, opacity: task.endDate ? 0.4 : 1 }}
           />
         </div>
+      </div>
+
+      {/* Click URL */}
+      <div>
+        <label style={fieldLabel}>Lenke (URL)</label>
+        <input
+          type="url"
+          value={task.clickUrl ?? ''}
+          onChange={e => update({ clickUrl: e.target.value || null })}
+          placeholder="https://..."
+          style={inputStyle}
+        />
       </div>
 
       {/* Color picker */}

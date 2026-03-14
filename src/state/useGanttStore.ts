@@ -26,11 +26,40 @@ export interface GanttStore {
 
 const STORAGE_KEY = 'mermaid-gantt-chart'
 
+/** Migrate data from older storage versions. */
+function migrateChart(raw: unknown): GanttChart {
+  const data = raw as Record<string, unknown>
+  return {
+    ...(data as GanttChart),
+    weekday: (data['weekday'] as string | null | undefined) ?? null,
+    sections: ((data['sections'] as unknown[]) ?? []).map(s => {
+      const sec = s as Record<string, unknown>
+      return {
+        ...(sec as GanttSection),
+        tasks: ((sec['tasks'] as unknown[]) ?? []).map(t => {
+          const task = t as Record<string, unknown>
+          // Migrate afterTaskId (old) → afterTaskIds (new)
+          const legacyId = task['afterTaskId'] as string | null | undefined
+          const afterTaskIds = Array.isArray(task['afterTaskIds'])
+            ? (task['afterTaskIds'] as string[])
+            : legacyId ? [legacyId] : []
+          return {
+            ...(task as GanttTask),
+            afterTaskIds,
+            clickUrl: (task['clickUrl'] as string | null | undefined) ?? null,
+            color: (task['color'] as string | null | undefined) ?? null,
+          }
+        }),
+      }
+    }),
+  }
+}
+
 function loadFromStorage(): GanttChart | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as GanttChart
+    return migrateChart(JSON.parse(raw))
   } catch {
     return null
   }

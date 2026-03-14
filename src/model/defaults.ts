@@ -12,7 +12,8 @@ export function createTask(partial?: Partial<GanttTask>): GanttTask {
     startDate: today,
     endDate: null,
     duration: '3d',
-    afterTaskId: null,
+    afterTaskIds: [],
+    clickUrl: null,
     color: null,
     ...partial,
   }
@@ -46,6 +47,7 @@ export function createChart(title = 'My Project'): GanttChart {
     tickInterval: '1week',
     excludes: null,
     todayMarker: true,
+    weekday: null,
     sections: [
       {
         id: sectionId,
@@ -58,7 +60,8 @@ export function createChart(title = 'My Project'): GanttChart {
             startDate: start,
             endDate: null,
             duration: '5d',
-            afterTaskId: null,
+            afterTaskIds: [],
+            clickUrl: null,
             color: '#06d6a0',
           },
           {
@@ -68,7 +71,8 @@ export function createChart(title = 'My Project'): GanttChart {
             startDate: week2,
             endDate: null,
             duration: '7d',
-            afterTaskId: task1Id,
+            afterTaskIds: [task1Id],
+            clickUrl: null,
             color: '#4361ee',
           },
           {
@@ -78,7 +82,8 @@ export function createChart(title = 'My Project'): GanttChart {
             startDate: week3,
             endDate: null,
             duration: null,
-            afterTaskId: task2Id,
+            afterTaskIds: [task2Id],
+            clickUrl: null,
             color: '#f4a261',
           },
         ],

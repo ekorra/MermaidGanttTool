@@ -1,7 +1,7 @@
 ---
 id: TASK-26
 title: Multiple after-dependencies (after task1 task2)
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-14'
 labels:

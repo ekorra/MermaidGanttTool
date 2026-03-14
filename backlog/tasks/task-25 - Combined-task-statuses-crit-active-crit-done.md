@@ -1,7 +1,7 @@
 ---
 id: TASK-25
 title: Combined task statuses (crit+active, crit+done)
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-14'
 labels:

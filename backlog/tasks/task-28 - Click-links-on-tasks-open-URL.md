@@ -1,7 +1,7 @@
 ---
 id: TASK-28
 title: Click links on tasks (open URL)
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-14'
 labels:

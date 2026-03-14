@@ -10,6 +10,7 @@ function makeChart(overrides?: Partial<GanttChart>): GanttChart {
     tickInterval: null,
     excludes: null,
     todayMarker: true,
+    weekday: null,
     sections: [],
     ...overrides,
   }
@@ -23,7 +24,9 @@ function makeTask(overrides?: Partial<GanttTask>): GanttTask {
     startDate: '2024-01-01',
     endDate: null,
     duration: '3d',
-    afterTaskId: null,
+    afterTaskIds: [],
+    clickUrl: null,
+    color: null,
     ...overrides,
   }
 }
@@ -52,6 +55,16 @@ describe('exportToMermaid', () => {
     expect(result).toContain('excludes weekends')
   })
 
+  it('includes weekday when set', () => {
+    const result = exportToMermaid(makeChart({ weekday: 'monday' }))
+    expect(result).toContain('weekday monday')
+  })
+
+  it('omits weekday when null', () => {
+    const result = exportToMermaid(makeChart({ weekday: null }))
+    expect(result).not.toContain('weekday')
+  })
+
   it('includes todayMarker off when false', () => {
     const result = exportToMermaid(makeChart({ todayMarker: false }))
     expect(result).toContain('todayMarker off')
@@ -72,48 +85,50 @@ describe('exportToMermaid', () => {
 
   it('renders a plain task with startDate and duration', () => {
     const chart = makeChart({
-      sections: [{
-        id: 'sec1',
-        title: 'Phase 1',
-        tasks: [makeTask()],
-      }],
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask()] }],
     })
     const result = exportToMermaid(chart)
     expect(result).toContain('section Phase 1')
     expect(result).toContain('My Task    :task_abc12345, 2024-01-01, 3d')
   })
 
-  it('renders a task with status tag', () => {
+  it('renders a task with crit status', () => {
     const chart = makeChart({
-      sections: [{
-        id: 'sec1',
-        title: 'Phase 1',
-        tasks: [makeTask({ status: 'crit' })],
-      }],
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ status: 'crit' })] }],
+    })
+    expect(exportToMermaid(chart)).toContain(':crit, task_abc12345, 2024-01-01, 3d')
+  })
+
+  it('renders combined crit+active as two tags', () => {
+    const chart = makeChart({
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ status: 'crit+active' })] }],
     })
     const result = exportToMermaid(chart)
-    expect(result).toContain(':crit, task_abc12345, 2024-01-01, 3d')
+    expect(result).toContain(':crit, active, task_abc12345')
+  })
+
+  it('renders combined crit+done as two tags', () => {
+    const chart = makeChart({
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ status: 'crit+done' })] }],
+    })
+    const result = exportToMermaid(chart)
+    expect(result).toContain(':crit, done, task_abc12345')
   })
 
   it('prefers endDate over duration', () => {
     const chart = makeChart({
-      sections: [{
-        id: 'sec1',
-        title: 'Phase 1',
-        tasks: [makeTask({ endDate: '2024-01-10', duration: '3d' })],
-      }],
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ endDate: '2024-01-10', duration: '3d' })] }],
     })
     const result = exportToMermaid(chart)
     expect(result).toContain('2024-01-10')
     expect(result).not.toContain('3d')
   })
 
-  it('prefers afterTaskId over startDate', () => {
+  it('prefers afterTaskIds over startDate (single)', () => {
     const chart = makeChart({
       sections: [{
-        id: 'sec1',
-        title: 'Phase 1',
-        tasks: [makeTask({ afterTaskId: 'task_prev0001', startDate: '2024-01-01' })],
+        id: 'sec1', title: 'Phase 1',
+        tasks: [makeTask({ afterTaskIds: ['task_prev0001'], startDate: '2024-01-01' })],
       }],
     })
     const result = exportToMermaid(chart)
@@ -121,40 +136,66 @@ describe('exportToMermaid', () => {
     expect(result).not.toContain('2024-01-01')
   })
 
-  it('milestone with no duration gets 0d', () => {
+  it('emits multiple after ids when afterTaskIds has two entries', () => {
     const chart = makeChart({
       sections: [{
-        id: 'sec1',
-        title: 'Milestones',
-        tasks: [makeTask({ status: 'milestone', duration: null, endDate: null })],
+        id: 'sec1', title: 'Phase 1',
+        tasks: [makeTask({ afterTaskIds: ['task_a', 'task_b'] })],
       }],
     })
     const result = exportToMermaid(chart)
-    expect(result).toContain(':milestone, task_abc12345, 2024-01-01, 0d')
+    expect(result).toContain('after task_a task_b')
+  })
+
+  it('milestone with no duration gets 0d', () => {
+    const chart = makeChart({
+      sections: [{
+        id: 'sec1', title: 'Milestones',
+        tasks: [makeTask({ status: 'milestone', duration: null, endDate: null })],
+      }],
+    })
+    expect(exportToMermaid(chart)).toContain(':milestone, task_abc12345, 2024-01-01, 0d')
+  })
+
+  it('emits click directive when clickUrl is set', () => {
+    const chart = makeChart({
+      sections: [{
+        id: 'sec1', title: 'Phase 1',
+        tasks: [makeTask({ clickUrl: 'https://example.com' })],
+      }],
+    })
+    const result = exportToMermaid(chart)
+    expect(result).toContain('click task_abc12345 href "https://example.com"')
+  })
+
+  it('does not emit click directive when clickUrl is null', () => {
+    const chart = makeChart({
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask()] }],
+    })
+    expect(exportToMermaid(chart)).not.toContain('click')
+  })
+
+  it('ungrouped section (empty title) omits section header', () => {
+    const chart = makeChart({
+      sections: [{ id: 'sec1', title: '', tasks: [makeTask()] }],
+    })
+    const result = exportToMermaid(chart)
+    expect(result).not.toContain('section ')
+    expect(result).toContain('My Task')
   })
 
   it('done task renders correctly', () => {
     const chart = makeChart({
-      sections: [{
-        id: 'sec1',
-        title: 'Phase 1',
-        tasks: [makeTask({ status: 'done' })],
-      }],
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ status: 'done' })] }],
     })
-    const result = exportToMermaid(chart)
-    expect(result).toContain(':done, task_abc12345')
+    expect(exportToMermaid(chart)).toContain(':done, task_abc12345')
   })
 
   it('active task renders correctly', () => {
     const chart = makeChart({
-      sections: [{
-        id: 'sec1',
-        title: 'Phase 1',
-        tasks: [makeTask({ status: 'active' })],
-      }],
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ status: 'active' })] }],
     })
-    const result = exportToMermaid(chart)
-    expect(result).toContain(':active, task_abc12345')
+    expect(exportToMermaid(chart)).toContain(':active, task_abc12345')
   })
 
   it('multiple sections render in order', () => {
@@ -165,8 +206,6 @@ describe('exportToMermaid', () => {
       ],
     })
     const result = exportToMermaid(chart)
-    const p1 = result.indexOf('section Phase 1')
-    const p2 = result.indexOf('section Phase 2')
-    expect(p1).toBeLessThan(p2)
+    expect(result.indexOf('section Phase 1')).toBeLessThan(result.indexOf('section Phase 2'))
   })
 })

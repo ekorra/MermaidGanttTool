@@ -13,6 +13,7 @@ const CANVAS_BG = '#1a1a2e'
 const SECTION_BG = 'rgba(255,255,255,0.04)'
 const GRID_COLOR = 'rgba(255,255,255,0.07)'
 const SECTION_TEXT_COLOR = 'rgba(255,255,255,0.4)'
+const TODAY_COLOR = '#ff6b6b'
 
 interface CanvasProps {
   store: GanttStore
@@ -35,14 +36,23 @@ export function Canvas({ store }: CanvasProps) {
   let currentY = HEADER_HEIGHT
 
   for (const section of chart.sections) {
-    rows.push({ type: 'section', sectionId: section.id, sectionTitle: section.title, y: currentY })
-    currentY += SECTION_HEADER_HEIGHT
+    // Only show section header row when the section has a title
+    if (section.title !== '') {
+      rows.push({ type: 'section', sectionId: section.id, sectionTitle: section.title, y: currentY })
+      currentY += SECTION_HEADER_HEIGHT
+    }
     for (const task of section.tasks) {
       rows.push({ type: 'task', sectionId: section.id, taskId: task.id, y: currentY })
       currentY += TASK_ROW_HEIGHT
     }
   }
   const svgHeight = Math.max(currentY - HEADER_HEIGHT, 100)
+
+  // Today marker
+  const todayX = chart.todayMarker ? scale.dateToX(new Date()) : null
+
+  // Collect all tasks for dependency lookup
+  const allTasks = chart.sections.flatMap(s => s.tasks)
 
   return (
     <div style={{ overflow: 'auto', height: '100%', position: 'relative', background: CANVAS_BG }}>
@@ -126,7 +136,7 @@ export function Canvas({ store }: CanvasProps) {
                 width={width}
                 pxPerDay={scale.pxPerDay}
                 onDragEnd={deltaDays => {
-                  if (task.afterTaskId !== null || task.startDate === null) return
+                  if (task.afterTaskIds.length > 0 || task.startDate === null) return
                   try {
                     const newStart = addDays(new Date(task.startDate), deltaDays)
                     updateTask(row.sectionId, task.id, { startDate: formatDate(newStart) })
@@ -146,28 +156,50 @@ export function Canvas({ store }: CanvasProps) {
           )
         })}
 
-        {/* Dependency arrows */}
-        {chart.sections.flatMap(section =>
-          section.tasks
-            .filter(t => t.afterTaskId !== null)
-            .flatMap(task => {
-              const fromTask = chart.sections.flatMap(s => s.tasks).find(t => t.id === task.afterTaskId)
-              if (!fromTask) return []
-              const fromPos = positions.get(fromTask.id)
-              const toPos = positions.get(task.id)
-              const fromRow = rows.find(r => r.taskId === fromTask.id)
-              const toRow = rows.find(r => r.taskId === task.id)
-              if (!fromPos || !toPos || !fromRow || !toRow) return []
-              return [(
-                <DependencyArrow
-                  key={`dep-${fromTask.id}-${task.id}`}
-                  fromX={scale.dateToX(fromPos.endDate)}
-                  fromRowY={fromRow.y - HEADER_HEIGHT}
-                  toX={scale.dateToX(toPos.startDate)}
-                  toRowY={toRow.y - HEADER_HEIGHT}
-                />
-              )]
-            })
+        {/* Dependency arrows — one per afterTaskId per task */}
+        {allTasks.flatMap(task =>
+          task.afterTaskIds.flatMap(depId => {
+            const fromTask = allTasks.find(t => t.id === depId)
+            if (!fromTask) return []
+            const fromPos = positions.get(fromTask.id)
+            const toPos = positions.get(task.id)
+            const fromRow = rows.find(r => r.taskId === fromTask.id)
+            const toRow = rows.find(r => r.taskId === task.id)
+            if (!fromPos || !toPos || !fromRow || !toRow) return []
+            return [(
+              <DependencyArrow
+                key={`dep-${depId}-${task.id}`}
+                fromX={scale.dateToX(fromPos.endDate)}
+                fromRowY={fromRow.y - HEADER_HEIGHT}
+                toX={scale.dateToX(toPos.startDate)}
+                toRowY={toRow.y - HEADER_HEIGHT}
+              />
+            )]
+          })
+        )}
+
+        {/* Today marker line */}
+        {todayX !== null && todayX >= 0 && todayX <= scale.canvasWidth && (
+          <g style={{ pointerEvents: 'none' }}>
+            <line
+              x1={todayX}
+              y1={0}
+              x2={todayX}
+              y2={svgHeight}
+              stroke={TODAY_COLOR}
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
+            />
+            <text
+              x={todayX + 4}
+              y={12}
+              fontSize={10}
+              fill={TODAY_COLOR}
+              fontWeight={600}
+            >
+              Today
+            </text>
+          </g>
         )}
       </svg>
     </div>

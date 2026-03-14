@@ -3,11 +3,13 @@ const DIAMOND_SIZE = 12
 
 // Status colours reused in TaskBar too
 export const STATUS_COLORS: Record<string, string> = {
-  active:    '#4361ee',
-  done:      '#6c757d',
-  crit:      '#dc3545',
-  milestone: '#f4a261',
-  default:   '#4cc9f0',
+  active:       '#4361ee',
+  done:         '#6c757d',
+  crit:         '#dc3545',
+  'crit+active':'#dc3545',   // red — crit dominates visually
+  'crit+done':  '#8b2020',   // dark red — critical but completed
+  milestone:    '#f4a261',
+  default:      '#4cc9f0',
 }
 
 interface MilestoneMarkerProps {

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useGanttStore } from '../../src/state/useGanttStore'
 import { createChart, createSection, createTask } from '../../src/model/defaults'
@@ -26,6 +26,12 @@ describe('useGanttStore', () => {
       const { result } = renderHook(() => useGanttStore(makeMinimalChart()))
       act(() => result.current.updateChartMeta({ dateFormat: 'MM/DD/YYYY' }))
       expect(result.current.chart.dateFormat).toBe('MM/DD/YYYY')
+    })
+
+    it('updateChartMeta updates weekday', () => {
+      const { result } = renderHook(() => useGanttStore(makeMinimalChart()))
+      act(() => result.current.updateChartMeta({ weekday: 'monday' }))
+      expect(result.current.chart.weekday).toBe('monday')
     })
 
     it('mermaidSyntax updates when title changes', () => {
@@ -84,6 +90,14 @@ describe('useGanttStore', () => {
       const taskId = section.tasks[0]!.id
       act(() => result.current.updateTask(section.id, taskId, { label: 'Updated' }))
       expect(result.current.chart.sections[0]?.tasks[0]?.label).toBe('Updated')
+    })
+
+    it('updateTask can set afterTaskIds', () => {
+      const { result } = renderHook(() => useGanttStore(makeMinimalChart()))
+      const section = result.current.chart.sections[0]!
+      const taskId = section.tasks[0]!.id
+      act(() => result.current.updateTask(section.id, taskId, { afterTaskIds: ['other_id'] }))
+      expect(result.current.chart.sections[0]?.tasks[0]?.afterTaskIds).toEqual(['other_id'])
     })
 
     it('deleteTask removes the task', () => {

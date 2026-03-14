@@ -3,8 +3,9 @@
 /**
  * Visual/semantic status of a task, maps directly to Mermaid Gantt status tags.
  * null means a plain task with no status tag.
+ * crit+active / crit+done emit two tags: "crit, active" / "crit, done".
  */
-export type TaskStatus = 'active' | 'done' | 'crit' | 'milestone'
+export type TaskStatus = 'active' | 'done' | 'crit' | 'crit+active' | 'crit+done' | 'milestone'
 
 /**
  * Date format tokens supported by Mermaid Gantt diagrams.
@@ -20,7 +21,7 @@ export interface GanttTask {
   status: TaskStatus | null
   /**
    * ISO date string for the task start date.
-   * Ignored on export when afterTaskId is set.
+   * Ignored on export when afterTaskIds is non-empty.
    */
   startDate: string | null
   /**
@@ -34,10 +35,15 @@ export interface GanttTask {
    */
   duration: string | null
   /**
-   * ID of another task. When set, start = end of that task ("after" syntax).
-   * Takes priority over startDate on export.
+   * IDs of predecessor tasks. When set, start = max end date of all predecessors.
+   * Emitted as "after id1 id2 ..." on export. Takes priority over startDate.
    */
-  afterTaskId: string | null
+  afterTaskIds: string[]
+  /**
+   * Optional URL for Mermaid click interaction.
+   * Emitted as "click <id> href \"<url>\"" on export.
+   */
+  clickUrl: string | null
   /**
    * UI-only color for the task bar (hex string). Not exported to Mermaid syntax.
    * Falls back to STATUS_COLORS when null.
@@ -50,7 +56,9 @@ export interface GanttTask {
 export interface GanttSection {
   /** Internal identifier — never emitted in Mermaid syntax. */
   id: string
-  /** Section heading, e.g. "section Design" → title = "Design". */
+  /**
+   * Section heading. Empty string = ungrouped (no "section" line emitted).
+   */
   title: string
   tasks: GanttTask[]
 }
@@ -70,5 +78,7 @@ export interface GanttChart {
   excludes: string | null
   /** Whether to show the today marker line. */
   todayMarker: boolean
+  /** Weekday for week start, e.g. "monday". null = Mermaid default. */
+  weekday: string | null
   sections: GanttSection[]
 }

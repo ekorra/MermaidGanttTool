@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './styles/global.css'
 import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
+import { SettingsPanel } from './components/shared/SettingsPanel'
 import { TaskList } from './components/Editor/TaskList'
 import { TaskDetailPanel } from './components/Editor/TaskDetailPanel'
 import { Canvas } from './components/Canvas/Canvas'
@@ -10,6 +11,7 @@ import { Preview } from './components/Preview/Preview'
 export function App() {
   const store = useGanttStore()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const handleExport = () => {
     void navigator.clipboard.writeText(store.mermaidSyntax)
@@ -31,8 +33,7 @@ export function App() {
       <Toolbar
         title={store.chart.title}
         onTitleChange={title => store.updateChartMeta({ title })}
-        dateFormat={store.chart.dateFormat}
-        onDateFormatChange={dateFormat => store.updateChartMeta({ dateFormat })}
+        onSettingsOpen={() => setSettingsOpen(true)}
         onExport={handleExport}
       />
 
@@ -61,7 +62,7 @@ export function App() {
           <Canvas store={store} />
         </div>
 
-        {/* Right: task detail panel (shown when task selected) */}
+        {/* Right: task detail panel */}
         {resolvedSelected && (
           <div style={{
             borderLeft: '1px solid var(--color-border)',
@@ -86,6 +87,15 @@ export function App() {
       }}>
         <Preview syntax={store.mermaidSyntax} />
       </div>
+
+      {/* Settings modal */}
+      {settingsOpen && (
+        <SettingsPanel
+          chart={store.chart}
+          onUpdate={store.updateChartMeta}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
     </div>
   )
 }

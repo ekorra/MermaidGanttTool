@@ -1,7 +1,7 @@
 ---
 id: TASK-29
 title: Tasks without a section (ungrouped)
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-14'
 labels:

@@ -9,14 +9,19 @@ interface TaskListProps {
 }
 
 const STATUS_BADGE: Record<string, { label: string; bg: string; color: string }> = {
-  active:    { label: 'active',    bg: '#d1f5e0', color: '#1a7a3c' },
-  done:      { label: 'done',      bg: '#e2e8f0', color: '#4a5568' },
-  crit:      { label: 'crit',      bg: '#fde8e8', color: '#c53030' },
-  milestone: { label: 'milestone', bg: '#fef3c7', color: '#92400e' },
+  active:       { label: 'active',     bg: '#d1f5e0', color: '#1a7a3c' },
+  done:         { label: 'done',       bg: '#e2e8f0', color: '#4a5568' },
+  crit:         { label: 'crit',       bg: '#fde8e8', color: '#c53030' },
+  'crit+active':{ label: 'crit',       bg: '#fde8e8', color: '#c53030' },
+  'crit+done':  { label: 'crit/done',  bg: '#f8d7da', color: '#8b1a1a' },
+  milestone:    { label: 'milestone',  bg: '#fef3c7', color: '#92400e' },
 }
 
 export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps) {
   const { chart, addSection, updateSection, deleteSection, addTask } = store
+
+  // Check if an ungrouped section (empty title) already exists
+  const hasUngrouped = chart.sections.some(s => s.title === '')
 
   return (
     <div style={{
@@ -29,29 +34,50 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
     }}>
       {chart.sections.map(section => (
         <div key={section.id}>
-          {/* Section header */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 4,
-            padding: '5px 8px',
-            borderBottom: '1px solid var(--color-border)',
-            marginBottom: 2,
-          }}>
-            <EditableLabel
-              value={section.title}
-              onChange={title => updateSection(section.id, { title })}
-              placeholder="Section name"
-              style={{ flex: 1, fontSize: 12, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}
-            />
-            <button
-              onClick={() => deleteSection(section.id)}
-              title="Delete section"
-              style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 15, cursor: 'pointer', padding: '0 2px', lineHeight: 1 }}
-            >
-              ×
-            </button>
-          </div>
+          {/* Section header — hidden for ungrouped (empty title) sections */}
+          {section.title !== '' ? (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              padding: '5px 8px',
+              borderBottom: '1px solid var(--color-border)',
+              marginBottom: 2,
+            }}>
+              <EditableLabel
+                value={section.title}
+                onChange={title => updateSection(section.id, { title })}
+                placeholder="Section name"
+                style={{ flex: 1, fontSize: 12, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}
+              />
+              <button
+                onClick={() => deleteSection(section.id)}
+                title="Delete section"
+                style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 15, cursor: 'pointer', padding: '0 2px', lineHeight: 1 }}
+              >
+                ×
+              </button>
+            </div>
+          ) : (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '3px 8px',
+              marginBottom: 2,
+            }}>
+              <span style={{ fontSize: 11, color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
+                Ingen seksjon
+              </span>
+              <button
+                onClick={() => deleteSection(section.id)}
+                title="Delete ungrouped section"
+                style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 13, cursor: 'pointer', lineHeight: 1 }}
+              >
+                ×
+              </button>
+            </div>
+          )}
 
           {/* Task rows */}
           {section.tasks.map(task => {
@@ -76,7 +102,6 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
                 onMouseOver={e => { if (!isSelected) e.currentTarget.style.background = 'var(--color-border)' }}
                 onMouseOut={e => { if (!isSelected) e.currentTarget.style.background = 'transparent' }}
               >
-                {/* Color dot */}
                 <span style={{
                   width: 8,
                   height: 8,
@@ -84,8 +109,6 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
                   background: dotColor,
                   flexShrink: 0,
                 }} />
-
-                {/* Label */}
                 <span style={{
                   flex: 1,
                   fontSize: 13,
@@ -96,8 +119,6 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
                 }}>
                   {task.label}
                 </span>
-
-                {/* Status badge */}
                 {badge && (
                   <span style={{
                     fontSize: 10,
@@ -158,6 +179,36 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
       >
         + Ny seksjon
       </button>
+
+      {/* Add ungrouped task (only if no ungrouped section exists yet) */}
+      {!hasUngrouped && (
+        <button
+          onClick={() => {
+            // Create an ungrouped section and immediately add a task
+            const { addSection: as, addTask: at, chart: c } = store
+            as('')
+            // The new section is appended — find it after state update via setTimeout
+            setTimeout(() => {
+              const ungrouped = store.chart.sections.find(s => s.title === '')
+              if (ungrouped) at(ungrouped.id)
+            }, 0)
+          }}
+          style={{
+            padding: '7px 8px',
+            background: 'none',
+            border: '1px dashed var(--color-border)',
+            borderRadius: 4,
+            color: 'var(--color-text-muted)',
+            cursor: 'pointer',
+            fontSize: 12,
+            textAlign: 'left',
+          }}
+          onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
+          onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
+        >
+          + Oppgave uten seksjon
+        </button>
+      )}
     </div>
   )
 }

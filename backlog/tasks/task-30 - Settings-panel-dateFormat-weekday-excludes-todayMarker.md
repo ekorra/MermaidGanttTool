@@ -1,7 +1,7 @@
 ---
 id: TASK-30
 title: Settings panel — dateFormat, weekday, excludes, todayMarker
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-14'
 labels:

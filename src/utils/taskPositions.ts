@@ -10,7 +10,7 @@ export interface ResolvedPosition {
 
 /**
  * Resolve the visual start/end position for every task in the chart,
- * following afterTaskId chains. Circular references are broken at depth 32.
+ * following afterTaskIds chains. Circular references are broken at depth 32.
  *
  * Returns a Map keyed by task ID.
  */
@@ -24,7 +24,6 @@ export function resolveTaskPositions(sections: GanttSection[]): Map<string, Reso
   function resolve(taskId: string, depth = 0): ResolvedPosition {
     if (resolved.has(taskId)) return resolved.get(taskId)!
     if (depth > 32) {
-      // Circular dependency guard — fall back to today
       const start = fallbackStart
       const end = addDays(start, 1)
       return { startDate: start, endDate: end, durationDays: 1 }
@@ -39,9 +38,14 @@ export function resolveTaskPositions(sections: GanttSection[]): Map<string, Reso
 
     let startDate: Date
 
-    if (task.afterTaskId !== null) {
-      const dep = resolve(task.afterTaskId, depth + 1)
-      startDate = dep.endDate
+    if (task.afterTaskIds.length > 0) {
+      // Start after the latest end date among all predecessors
+      let latestEnd = new Date(0)
+      for (const depId of task.afterTaskIds) {
+        const dep = resolve(depId, depth + 1)
+        if (dep.endDate > latestEnd) latestEnd = dep.endDate
+      }
+      startDate = latestEnd
     } else if (task.startDate !== null) {
       try {
         startDate = parseDate(task.startDate)

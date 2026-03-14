@@ -1,16 +1,11 @@
-import type { DateFormat } from '../../model/types'
-
 interface ToolbarProps {
   title: string
   onTitleChange: (title: string) => void
-  dateFormat: DateFormat
-  onDateFormatChange: (format: DateFormat) => void
+  onSettingsOpen: () => void
   onExport: () => void
 }
 
-const DATE_FORMATS: DateFormat[] = ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD-MM-YYYY']
-
-export function Toolbar({ title, onTitleChange, dateFormat, onDateFormatChange, onExport }: ToolbarProps) {
+export function Toolbar({ title, onTitleChange, onSettingsOpen, onExport }: ToolbarProps) {
   return (
     <header style={{
       height: 'var(--toolbar-height)',
@@ -41,23 +36,25 @@ export function Toolbar({ title, onTitleChange, dateFormat, onDateFormatChange, 
         }}
       />
 
-      <label style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-text-muted)' }}>
-        Date format
-        <select
-          value={dateFormat}
-          onChange={e => onDateFormatChange(e.target.value as DateFormat)}
-          style={{
-            padding: '4px 6px',
-            border: '1px solid var(--color-border)',
-            borderRadius: 4,
-            background: 'var(--color-bg)',
-          }}
-        >
-          {DATE_FORMATS.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-      </label>
+      {/* Settings button */}
+      <button
+        onClick={onSettingsOpen}
+        title="Diagraminnstillinger"
+        style={{
+          padding: '5px 10px',
+          border: '1px solid var(--color-border)',
+          borderRadius: 4,
+          background: 'var(--color-bg)',
+          color: 'var(--color-text-muted)',
+          fontSize: 16,
+          lineHeight: 1,
+          cursor: 'pointer',
+        }}
+        onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
+        onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
+      >
+        ⚙
+      </button>
 
       <button
         onClick={onExport}
