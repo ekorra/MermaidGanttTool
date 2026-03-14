@@ -185,7 +185,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
         <button
           onClick={() => {
             // Create an ungrouped section and immediately add a task
-            const { addSection: as, addTask: at, chart: c } = store
+            const { addSection: as, addTask: at } = store
             as('')
             // The new section is appended — find it after state update via setTimeout
             setTimeout(() => {
