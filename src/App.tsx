@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import './styles/global.css'
+import { isDarkActive, toggleTheme } from './utils/theme'
 import { useGanttStore } from './state/useGanttStore'
 import { Toolbar } from './components/shared/Toolbar'
 import { SettingsPanel } from './components/shared/SettingsPanel'
@@ -26,6 +27,12 @@ export function App() {
   const store = useGanttStore()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [isDark, setIsDark] = useState(() => isDarkActive())
+
+  const handleToggleTheme = () => {
+    const dark = toggleTheme()
+    setIsDark(dark)
+  }
 
   const [previewOpen, setPreviewOpen] = useState(() => loadPreviewState().open)
   const [previewHeight, setPreviewHeight] = useState(() => loadPreviewState().height)
@@ -84,6 +91,8 @@ export function App() {
         onExport={handleExport}
         previewOpen={previewOpen}
         onTogglePreview={togglePreview}
+        isDark={isDark}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main area: Oppgaveliste + Tidslinje + Detaljpanel */}

@@ -13,6 +13,19 @@
   --color-primary: #4361ee;
   --color-primary-hover: #3451d1;
 
+  --badge-active-bg: #d1f5e0;
+  --badge-active-color: #1a7a3c;
+  --badge-done-bg: #e2e8f0;
+  --badge-done-color: #4a5568;
+  --badge-crit-bg: #fde8e8;
+  --badge-crit-color: #c53030;
+  --badge-critdone-bg: #f8d7da;
+  --badge-critdone-color: #8b1a1a;
+  --badge-milestone-bg: #fef3c7;
+  --badge-milestone-color: #92400e;
+
+  --swatch-border: transparent;
+
   --toolbar-height: 48px;
   --editor-width: 260px;
   --detail-width: 240px;
@@ -22,6 +35,80 @@
   font-size: 14px;
   color: var(--color-text);
   background: var(--color-bg);
+}
+
+/* Dark mode — applied when OS preference is dark (and no manual override) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #13131f;
+    --color-surface: #1e1e2e;
+    --color-border: #313244;
+    --color-text: #cdd6f4;
+    --color-text-muted: #6c7086;
+    --color-primary: #89b4fa;
+    --color-primary-hover: #74c7ec;
+
+    --badge-active-bg: #1a3d2b;
+    --badge-active-color: #6ee7a0;
+    --badge-done-bg: #2d3748;
+    --badge-done-color: #a0aec0;
+    --badge-crit-bg: #3d1515;
+    --badge-crit-color: #fc8181;
+    --badge-critdone-bg: #3d1515;
+    --badge-critdone-color: #fc8181;
+    --badge-milestone-bg: #3d2e00;
+    --badge-milestone-color: #fbd38d;
+
+    --swatch-border: rgba(255, 255, 255, 0.18);
+  }
+}
+
+/* Manual dark override */
+[data-theme="dark"] {
+  --color-bg: #13131f;
+  --color-surface: #1e1e2e;
+  --color-border: #313244;
+  --color-text: #cdd6f4;
+  --color-text-muted: #6c7086;
+  --color-primary: #89b4fa;
+  --color-primary-hover: #74c7ec;
+
+  --badge-active-bg: #1a3d2b;
+  --badge-active-color: #6ee7a0;
+  --badge-done-bg: #2d3748;
+  --badge-done-color: #a0aec0;
+  --badge-crit-bg: #3d1515;
+  --badge-crit-color: #fc8181;
+  --badge-critdone-bg: #3d1515;
+  --badge-critdone-color: #fc8181;
+  --badge-milestone-bg: #3d2e00;
+  --badge-milestone-color: #fbd38d;
+
+  --swatch-border: rgba(255, 255, 255, 0.18);
+}
+
+/* Manual light override — force light even if OS is dark */
+[data-theme="light"] {
+  --color-bg: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-border: #dee2e6;
+  --color-text: #212529;
+  --color-text-muted: #6c757d;
+  --color-primary: #4361ee;
+  --color-primary-hover: #3451d1;
+
+  --badge-active-bg: #d1f5e0;
+  --badge-active-color: #1a7a3c;
+  --badge-done-bg: #e2e8f0;
+  --badge-done-color: #4a5568;
+  --badge-crit-bg: #fde8e8;
+  --badge-crit-color: #c53030;
+  --badge-critdone-bg: #f8d7da;
+  --badge-critdone-color: #8b1a1a;
+  --badge-milestone-bg: #fef3c7;
+  --badge-milestone-color: #92400e;
+
+  --swatch-border: transparent;
 }
 
 button {

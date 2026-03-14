@@ -9,12 +9,12 @@ interface TaskListProps {
 }
 
 const STATUS_BADGE: Record<string, { label: string; bg: string; color: string }> = {
-  active:       { label: 'active',     bg: '#d1f5e0', color: '#1a7a3c' },
-  done:         { label: 'done',       bg: '#e2e8f0', color: '#4a5568' },
-  crit:         { label: 'crit',       bg: '#fde8e8', color: '#c53030' },
-  'crit+active':{ label: 'crit',       bg: '#fde8e8', color: '#c53030' },
-  'crit+done':  { label: 'crit/done',  bg: '#f8d7da', color: '#8b1a1a' },
-  milestone:    { label: 'milestone',  bg: '#fef3c7', color: '#92400e' },
+  active:       { label: 'active',    bg: 'var(--badge-active-bg)',    color: 'var(--badge-active-color)' },
+  done:         { label: 'done',      bg: 'var(--badge-done-bg)',      color: 'var(--badge-done-color)' },
+  crit:         { label: 'crit',      bg: 'var(--badge-crit-bg)',      color: 'var(--badge-crit-color)' },
+  'crit+active':{ label: 'crit',      bg: 'var(--badge-crit-bg)',      color: 'var(--badge-crit-color)' },
+  'crit+done':  { label: 'crit/done', bg: 'var(--badge-critdone-bg)',  color: 'var(--badge-critdone-color)' },
+  milestone:    { label: 'milestone', bg: 'var(--badge-milestone-bg)', color: 'var(--badge-milestone-color)' },
 }
 
 export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps) {

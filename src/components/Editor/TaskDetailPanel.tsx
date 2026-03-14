@@ -208,7 +208,9 @@ export function TaskDetailPanel({ store, taskId, onClose }: TaskDetailPanelProps
                 height: 22,
                 borderRadius: 4,
                 background: c,
-                border: task.color === c ? '2px solid var(--color-text)' : '2px solid transparent',
+                border: '1px solid var(--swatch-border)',
+                outline: task.color === c ? '2px solid var(--color-text)' : 'none',
+                outlineOffset: 1,
                 cursor: 'pointer',
                 padding: 0,
               }}
