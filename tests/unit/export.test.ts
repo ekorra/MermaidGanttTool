@@ -209,3 +209,44 @@ describe('exportToMermaid', () => {
     expect(result.indexOf('section Phase 1')).toBeLessThan(result.indexOf('section Phase 2'))
   })
 })
+
+describe('date format conversion', () => {
+  it('converts ISO dates to DD-MM-YYYY on export', () => {
+    const chart = makeChart({
+      dateFormat: 'DD-MM-YYYY',
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ startDate: '2024-03-15', endDate: '2024-04-01' })] }],
+    })
+    const result = exportToMermaid(chart)
+    expect(result).toContain('15-03-2024')
+    expect(result).toContain('01-04-2024')
+    expect(result).not.toContain('2024-03-15')
+  })
+
+  it('converts ISO dates to MM/DD/YYYY on export', () => {
+    const chart = makeChart({
+      dateFormat: 'MM/DD/YYYY',
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ startDate: '2024-03-15', endDate: null, duration: '3d' })] }],
+    })
+    const result = exportToMermaid(chart)
+    expect(result).toContain('03/15/2024')
+    expect(result).not.toContain('2024-03-15')
+  })
+
+  it('keeps ISO format when dateFormat is YYYY-MM-DD', () => {
+    const chart = makeChart({
+      dateFormat: 'YYYY-MM-DD',
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ startDate: '2024-03-15' })] }],
+    })
+    expect(exportToMermaid(chart)).toContain('2024-03-15')
+  })
+
+  it('does not convert dates in afterTaskIds (no date there)', () => {
+    const chart = makeChart({
+      dateFormat: 'DD-MM-YYYY',
+      sections: [{ id: 'sec1', title: 'Phase 1', tasks: [makeTask({ afterTaskIds: ['task_prev'], startDate: '2024-03-15' })] }],
+    })
+    const result = exportToMermaid(chart)
+    expect(result).toContain('after task_prev')
+    expect(result).not.toContain('15-03-2024')
+  })
+})

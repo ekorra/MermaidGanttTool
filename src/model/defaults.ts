@@ -42,12 +42,12 @@ export function createChart(title = 'My Project'): GanttChart {
 
   return {
     title,
-    dateFormat: 'YYYY-MM-DD',
+    dateFormat: 'DD-MM-YYYY',
     axisFormat: '%b %d',
     tickInterval: '1week',
     excludes: null,
     todayMarker: true,
-    weekday: null,
+    weekday: 'monday',
     sections: [
       {
         id: sectionId,

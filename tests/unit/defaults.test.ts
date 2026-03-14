@@ -41,7 +41,7 @@ describe('createChart', () => {
   it('returns a chart with required fields', () => {
     const chart = createChart()
     expect(chart.title).toBe('My Project')
-    expect(chart.dateFormat).toBe('YYYY-MM-DD')
+    expect(chart.dateFormat).toBe('DD-MM-YYYY')
     expect(chart.sections.length).toBeGreaterThan(0)
   })
 
