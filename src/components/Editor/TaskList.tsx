@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react'
 import type { GanttStore } from '../../state/useGanttStore'
 import { EditableLabel } from '../shared/EditableLabel'
 import { DEFAULT_TASK_COLOR } from '../../utils/colors'
@@ -18,7 +19,24 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; color: string }>
 }
 
 export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps) {
-  const { chart, addSection, updateSection, deleteSection, addTask } = store
+  const { chart, addSection, updateSection, deleteSection, addTask, updateTask } = store
+  const [renamingTaskId, setRenamingTaskId] = useState<string | null>(null)
+  const [renameDraft, setRenameDraft] = useState('')
+  const renameInputRef = useRef<HTMLInputElement>(null)
+
+  const startRename = (taskId: string, currentLabel: string) => {
+    setRenamingTaskId(taskId)
+    setRenameDraft(currentLabel)
+    // focus is handled by autoFocus on the input
+  }
+
+  const commitRename = (sectionId: string, taskId: string) => {
+    const trimmed = renameDraft.trim()
+    if (trimmed) updateTask(sectionId, taskId, { label: trimmed })
+    setRenamingTaskId(null)
+  }
+
+  const cancelRename = () => setRenamingTaskId(null)
 
   // Check if an ungrouped section (empty title) already exists
   const hasUngrouped = chart.sections.some(s => s.title === '')
@@ -115,16 +133,49 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
                   background: dotColor,
                   flexShrink: 0,
                 }} />
-                <span style={{
-                  flex: 1,
-                  fontSize: 13,
-                  color: isSelected ? '#fff' : 'var(--color-text)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
-                  {task.label}
-                </span>
+                {renamingTaskId === task.id ? (
+                  <input
+                    ref={renameInputRef}
+                    autoFocus
+                    value={renameDraft}
+                    onChange={e => setRenameDraft(e.target.value)}
+                    onBlur={() => commitRename(section.id, task.id)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') commitRename(section.id, task.id)
+                      if (e.key === 'Escape') cancelRename()
+                    }}
+                    onClick={e => e.stopPropagation()}
+                    style={{
+                      flex: 1,
+                      fontSize: 13,
+                      padding: '1px 4px',
+                      border: '1px solid var(--color-primary)',
+                      borderRadius: 3,
+                      background: 'var(--color-surface)',
+                      color: 'var(--color-text)',
+                      outline: 'none',
+                      minWidth: 0,
+                    }}
+                  />
+                ) : (
+                  <span
+                    style={{
+                      flex: 1,
+                      fontSize: 13,
+                      color: isSelected ? '#fff' : 'var(--color-text)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onDoubleClick={e => {
+                      e.stopPropagation()
+                      startRename(task.id, task.label)
+                    }}
+                    title="Double-click to rename"
+                  >
+                    {task.label}
+                  </span>
+                )}
                 {badge && (
                   <span style={{
                     fontSize: 10,

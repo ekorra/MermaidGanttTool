@@ -42,11 +42,11 @@ test('adds a new section', async ({ page }) => {
   await expect(page.getByTestId('syntax-pane')).toContainText('section New Section')
 })
 
-test('renames a section via EditableLabel', async ({ page }) => {
+test('renames a section via EditableLabel (double-click)', async ({ page }) => {
   const taskList = page.getByTestId('task-list')
 
-  // Click the section title span to enter edit mode
-  await taskList.getByText('Phase 1').click()
+  // Double-click the section title span to enter edit mode
+  await taskList.getByText('Phase 1').dblclick()
   // EditableLabel renders a controlled input — locate it within the task list
   const input = taskList.locator('input').first()
   await input.fill('Renamed Section')

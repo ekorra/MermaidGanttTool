@@ -8,7 +8,7 @@ interface EditableLabelProps {
 }
 
 /**
- * A span that becomes an input when clicked.
+ * A span that becomes an input when double-clicked.
  * Commits on blur or Enter, cancels on Escape.
  */
 export function EditableLabel({ value, onChange, placeholder, style }: EditableLabelProps) {
@@ -52,6 +52,7 @@ export function EditableLabel({ value, onChange, placeholder, style }: EditableL
           padding: '1px 4px',
           outline: 'none',
           background: 'var(--color-surface)',
+          color: 'var(--color-text)',
           ...style,
         }}
         autoFocus
@@ -61,8 +62,8 @@ export function EditableLabel({ value, onChange, placeholder, style }: EditableL
 
   return (
     <span
-      onClick={() => setEditing(true)}
-      title="Click to edit"
+      onDoubleClick={() => setEditing(true)}
+      title="Double-click to edit"
       style={{
         cursor: 'text',
         borderRadius: 3,
