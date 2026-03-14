@@ -1,7 +1,7 @@
 import type { GanttStore } from '../../state/useGanttStore'
 import { useTimelineScale } from '../../hooks/useTimelineScale'
 import { resolveTaskPositions } from '../../utils/taskPositions'
-import { formatDate, addDays } from '../../utils/dateUtils'
+import { formatDate, addDays, diffDays } from '../../utils/dateUtils'
 import { parseDurationDays } from '../../utils/durationUtils'
 import { isDarkActive } from '../../utils/theme'
 import { TimelineHeader, HEADER_HEIGHT } from './TimelineHeader'
@@ -18,7 +18,7 @@ interface CanvasProps {
 }
 
 export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
-  const { chart, updateTask } = store
+  const { chart, updateTask, deleteTask } = store
   const scale = useTimelineScale(chart.sections)
   const positions = resolveTaskPositions(chart.sections)
 
@@ -102,12 +102,12 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
           const isSelected = task.id === selectedTaskId
           const handleSelect = (e?: React.MouseEvent) => {
             e?.stopPropagation()
-            onSelectTask(isSelected ? null : task.id)
+            onSelectTask(task.id)
           }
 
           if (task.status === 'milestone') {
             return (
-              <g key={task.id} transform={`translate(0, ${svgY})`} onClick={e => { e.stopPropagation(); onSelectTask(isSelected ? null : task.id) }}>
+              <g key={task.id} transform={`translate(0, ${svgY})`} onClick={e => { e.stopPropagation(); onSelectTask(task.id) }}>
                 <MilestoneMarker
                   x={x} label={task.label}
                   color={task.color ?? undefined}
@@ -141,6 +141,23 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
                   } else {
                     const base = task.duration ? parseDurationDays(task.duration) : 1
                     updateTask(row.sectionId, task.id, { duration: `${Math.max(1, base + deltaDays)}d` })
+                  }
+                }}
+                onResizeStartEnd={deltaDays => {
+                  if (task.afterTaskIds.length > 0 || task.startDate === null) return
+                  const newStart = addDays(new Date(task.startDate), deltaDays)
+                  const newDays = task.endDate !== null
+                    ? diffDays(newStart, new Date(task.endDate))
+                    : (task.duration ? parseDurationDays(task.duration) : 1) - deltaDays
+                  if (newDays <= 0) {
+                    const confirmed = window.confirm(`"${task.label}" ville bli 0 dager eller kortere. Vil du slette oppgaven?`)
+                    if (confirmed) deleteTask(row.sectionId, task.id)
+                    return
+                  }
+                  if (task.endDate !== null) {
+                    updateTask(row.sectionId, task.id, { startDate: formatDate(newStart) })
+                  } else {
+                    updateTask(row.sectionId, task.id, { startDate: formatDate(newStart), duration: `${newDays}d` })
                   }
                 }}
               />
