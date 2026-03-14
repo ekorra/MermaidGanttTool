@@ -110,6 +110,25 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
           </ul>
         </section>
 
+        {/* Support */}
+        <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: 16, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <p style={{ fontSize: 12, color: 'var(--color-text-muted)', textAlign: 'center' }}>
+            Liker du verktøyet? Du kan støtte videre utvikling:
+          </p>
+          {/* TODO: replace YOUR_USERNAME with your Buy Me a Coffee username after creating an account at https://www.buymeacoffee.com */}
+          <a
+            href="https://www.buymeacoffee.com/YOUR_USERNAME"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+              alt="Buy Me a Coffee"
+              style={{ height: 40, borderRadius: 6 }}
+            />
+          </a>
+        </section>
+
         {/* Links */}
         <section>
           <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
