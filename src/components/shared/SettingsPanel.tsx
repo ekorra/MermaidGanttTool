@@ -6,7 +6,7 @@ interface SettingsPanelProps {
   onClose: () => void
 }
 
-const DATE_FORMATS: DateFormat[] = ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD-MM-YYYY']
+const DATE_FORMATS: DateFormat[] = ['DD-MM-YYYY', 'DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD']
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
 const fieldLabel: React.CSSProperties = {

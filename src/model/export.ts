@@ -66,6 +66,7 @@ function toMermaidDate(isoDate: string, dateFormat: DateFormat): string {
     case 'YYYY-MM-DD': return isoDate
     case 'MM/DD/YYYY': return `${month}/${day}/${year}`
     case 'DD-MM-YYYY': return `${day}-${month}-${year}`
+    case 'DD/MM/YYYY': return `${day}/${month}/`
   }
 }
 

@@ -10,7 +10,7 @@ export type TaskStatus = 'active' | 'done' | 'crit' | 'crit+active' | 'crit+done
 /**
  * Date format tokens supported by Mermaid Gantt diagrams.
  */
-export type DateFormat = 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD-MM-YYYY'
+export type DateFormat = 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD-MM-YYYY' | 'DD/MM/YYYY'
 
 export interface GanttTask {
   /** Unique identifier within the chart. Must not contain whitespace (Mermaid constraint). */
