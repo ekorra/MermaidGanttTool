@@ -8,7 +8,9 @@ interface UseDragOptions {
 /**
  * Pointer-event based horizontal drag for SVG elements.
  * Returns event handlers to attach to an SVG element.
- * onDragEnd is called with the number of days to shift (positive = right, negative = left).
+ * onDragEnd is called with the number of days to shift.
+ * wasDragged() returns true if the last pointer interaction was a drag (>4px),
+ * allowing callers to distinguish drag from click.
  */
 export function useDrag({ onDragEnd, pxPerDay }: UseDragOptions) {
   const startX = useRef<number | null>(null)
@@ -39,5 +41,8 @@ export function useDrag({ onDragEnd, pxPerDay }: UseDragOptions) {
     isDragging.current = false
   }, [onDragEnd, pxPerDay])
 
-  return { onPointerDown, onPointerMove, onPointerUp }
+  /** True if the most recent pointer-down was followed by a drag (>4px). */
+  const wasDragged = useCallback(() => isDragging.current, [])
+
+  return { onPointerDown, onPointerMove, onPointerUp, wasDragged }
 }

@@ -12,11 +12,13 @@ interface TaskBarProps {
   x: number
   width: number
   pxPerDay: number
+  selected: boolean
+  onSelect: () => void
   onDragEnd: (deltaDays: number) => void
   onResizeEnd: (deltaDays: number) => void
 }
 
-export function TaskBar({ task, x, width, pxPerDay, onDragEnd, onResizeEnd }: TaskBarProps) {
+export function TaskBar({ task, x, width, pxPerDay, selected, onSelect, onDragEnd, onResizeEnd }: TaskBarProps) {
   const drag = useDrag({ onDragEnd, pxPerDay })
   const resize = useResize({ onResizeEnd, pxPerDay })
 
@@ -24,9 +26,32 @@ export function TaskBar({ task, x, width, pxPerDay, onDragEnd, onResizeEnd }: Ta
   const barWidth = Math.max(MIN_WIDTH, width)
   const y = BAR_PADDING_Y
 
+  const handlePointerUp = (e: React.PointerEvent<SVGRectElement>) => {
+    drag.onPointerUp(e)
+    // Only fire onSelect if no drag happened
+    if (!drag.wasDragged()) {
+      onSelect()
+    }
+  }
+
   return (
     <g style={{ cursor: 'grab' }}>
-      {/* Main bar — handles drag */}
+      {/* Selection highlight */}
+      {selected && (
+        <rect
+          x={x - 2}
+          y={y - 2}
+          width={barWidth + 2}
+          height={BAR_HEIGHT + 4}
+          rx={5}
+          fill="none"
+          stroke="rgba(255,255,255,0.7)"
+          strokeWidth={2}
+          style={{ pointerEvents: 'none' }}
+        />
+      )}
+
+      {/* Main bar — handles drag + click */}
       <rect
         data-testid={`task-bar-${task.label}`}
         x={x}
@@ -38,7 +63,7 @@ export function TaskBar({ task, x, width, pxPerDay, onDragEnd, onResizeEnd }: Ta
         style={{ cursor: 'grab' }}
         onPointerDown={drag.onPointerDown}
         onPointerMove={drag.onPointerMove}
-        onPointerUp={drag.onPointerUp}
+        onPointerUp={handlePointerUp}
       />
 
       {/* Label */}

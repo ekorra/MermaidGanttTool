@@ -17,14 +17,15 @@ const TODAY_COLOR = '#ff6b6b'
 
 interface CanvasProps {
   store: GanttStore
+  selectedTaskId: string | null
+  onSelectTask: (id: string | null) => void
 }
 
-export function Canvas({ store }: CanvasProps) {
+export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
   const { chart, updateTask } = store
   const scale = useTimelineScale(chart.sections)
   const positions = resolveTaskPositions(chart.sections)
 
-  // Build row layout
   interface RowInfo {
     type: 'section' | 'task'
     sectionId: string
@@ -36,7 +37,6 @@ export function Canvas({ store }: CanvasProps) {
   let currentY = HEADER_HEIGHT
 
   for (const section of chart.sections) {
-    // Only show section header row when the section has a title
     if (section.title !== '') {
       rows.push({ type: 'section', sectionId: section.id, sectionTitle: section.title, y: currentY })
       currentY += SECTION_HEADER_HEIGHT
@@ -48,10 +48,7 @@ export function Canvas({ store }: CanvasProps) {
   }
   const svgHeight = Math.max(currentY - HEADER_HEIGHT, 100)
 
-  // Today marker
   const todayX = chart.todayMarker ? scale.dateToX(new Date()) : null
-
-  // Collect all tasks for dependency lookup
   const allTasks = chart.sections.flatMap(s => s.tasks)
 
   return (
@@ -63,22 +60,19 @@ export function Canvas({ store }: CanvasProps) {
         width={scale.canvasWidth}
         height={svgHeight}
         style={{ display: 'block', overflow: 'visible' }}
+        onClick={() => onSelectTask(null)}
       >
         <ArrowDefs />
 
-        {/* Background */}
         <rect x={0} y={0} width={scale.canvasWidth} height={svgHeight} fill={CANVAS_BG} />
 
         {/* Weekly grid lines */}
         {Array.from({ length: Math.ceil(scale.totalDays / 7) }, (_, i) => i * 7).map(dayOffset => (
           <line
             key={dayOffset}
-            x1={dayOffset * scale.pxPerDay}
-            y1={0}
-            x2={dayOffset * scale.pxPerDay}
-            y2={svgHeight}
-            stroke={GRID_COLOR}
-            strokeWidth={1}
+            x1={dayOffset * scale.pxPerDay} y1={0}
+            x2={dayOffset * scale.pxPerDay} y2={svgHeight}
+            stroke={GRID_COLOR} strokeWidth={1}
           />
         ))}
 
@@ -88,19 +82,10 @@ export function Canvas({ store }: CanvasProps) {
           if (row.type === 'section') {
             return (
               <g key={`sec-bg-${row.sectionId}`}>
-                <rect
-                  x={0}
-                  y={svgY}
-                  width={scale.canvasWidth}
-                  height={SECTION_HEADER_HEIGHT}
-                  fill={SECTION_BG}
-                />
+                <rect x={0} y={svgY} width={scale.canvasWidth} height={SECTION_HEADER_HEIGHT} fill={SECTION_BG} />
                 <text
-                  x={12}
-                  y={svgY + SECTION_HEADER_HEIGHT / 2 + 4}
-                  fontSize={11}
-                  fontWeight={700}
-                  fill={SECTION_TEXT_COLOR}
+                  x={12} y={svgY + SECTION_HEADER_HEIGHT / 2 + 4}
+                  fontSize={11} fontWeight={700} fill={SECTION_TEXT_COLOR}
                   style={{ textTransform: 'uppercase', letterSpacing: 1 }}
                 >
                   {row.sectionTitle?.toUpperCase()}
@@ -109,21 +94,28 @@ export function Canvas({ store }: CanvasProps) {
             )
           }
 
-          const task = chart.sections
-            .find(s => s.id === row.sectionId)
-            ?.tasks.find(t => t.id === row.taskId)
+          const task = chart.sections.find(s => s.id === row.sectionId)?.tasks.find(t => t.id === row.taskId)
           if (!task) return null
-
           const pos = positions.get(task.id)
           if (!pos) return null
 
           const x = scale.dateToX(pos.startDate)
           const width = scale.durationToPx(pos.durationDays)
+          const isSelected = task.id === selectedTaskId
+          const handleSelect = (e?: React.MouseEvent) => {
+            e?.stopPropagation()
+            onSelectTask(isSelected ? null : task.id)
+          }
 
           if (task.status === 'milestone') {
             return (
-              <g key={task.id} transform={`translate(0, ${svgY})`}>
-                <MilestoneMarker x={x} label={task.label} color={task.color ?? undefined} />
+              <g key={task.id} transform={`translate(0, ${svgY})`} onClick={e => { e.stopPropagation(); onSelectTask(isSelected ? null : task.id) }}>
+                <MilestoneMarker
+                  x={x} label={task.label}
+                  color={task.color ?? undefined}
+                  selected={isSelected}
+                  onSelect={() => onSelectTask(isSelected ? null : task.id)}
+                />
               </g>
             )
           }
@@ -135,6 +127,8 @@ export function Canvas({ store }: CanvasProps) {
                 x={x}
                 width={width}
                 pxPerDay={scale.pxPerDay}
+                selected={isSelected}
+                onSelect={() => handleSelect()}
                 onDragEnd={deltaDays => {
                   if (task.afterTaskIds.length > 0 || task.startDate === null) return
                   try {
@@ -156,7 +150,7 @@ export function Canvas({ store }: CanvasProps) {
           )
         })}
 
-        {/* Dependency arrows — one per afterTaskId per task */}
+        {/* Dependency arrows */}
         {allTasks.flatMap(task =>
           task.afterTaskIds.flatMap(depId => {
             const fromTask = allTasks.find(t => t.id === depId)
@@ -178,27 +172,11 @@ export function Canvas({ store }: CanvasProps) {
           })
         )}
 
-        {/* Today marker line */}
+        {/* Today marker */}
         {todayX !== null && todayX >= 0 && todayX <= scale.canvasWidth && (
           <g style={{ pointerEvents: 'none' }}>
-            <line
-              x1={todayX}
-              y1={0}
-              x2={todayX}
-              y2={svgHeight}
-              stroke={TODAY_COLOR}
-              strokeWidth={1.5}
-              strokeDasharray="4 3"
-            />
-            <text
-              x={todayX + 4}
-              y={12}
-              fontSize={10}
-              fill={TODAY_COLOR}
-              fontWeight={600}
-            >
-              Today
-            </text>
+            <line x1={todayX} y1={0} x2={todayX} y2={svgHeight} stroke={TODAY_COLOR} strokeWidth={1.5} strokeDasharray="4 3" />
+            <text x={todayX + 4} y={12} fontSize={10} fill={TODAY_COLOR} fontWeight={600}>Today</text>
           </g>
         )}
       </svg>
