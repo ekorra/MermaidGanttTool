@@ -117,7 +117,7 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
           </p>
           {/* TODO: replace YOUR_USERNAME with your Buy Me a Coffee username after creating an account at https://www.buymeacoffee.com */}
           <a
-            href="https://www.buymeacoffee.com/YOUR_USERNAME"
+            href="https://buymeacoffee.com/ekorra"
             target="_blank"
             rel="noopener noreferrer"
           >
