@@ -79,6 +79,7 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
             <li>Oppgaver uten seksjon (ungrouped)</li>
             <li>Innstillinger: datoformat, ukestart, ekskluderinger, today marker</li>
             <li>Eksporter Mermaid-syntaks med ett klikk</li>
+            <li>Importer Mermaid Gantt fra utklippstavlen med «Paste Mermaid»</li>
             <li>Diagrammet lagres automatisk i nettleseren (localStorage)</li>
             <li>Mørkt og lyst tema</li>
           </ul>
@@ -91,7 +92,6 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
           </h3>
           <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, color: 'var(--color-text)', lineHeight: 1.5 }}>
             <li><strong>Farger er kun visuelle</strong> — de eksporteres ikke til Mermaid-syntaksen</li>
-            <li>Ingen import fra eksisterende Mermaid-syntaks (planlagt)</li>
             <li>Ingen PNG-eksport (planlagt)</li>
             <li>Lagring kun lokalt i nettleseren — ikke synkronisert mellom enheter</li>
           </ul>

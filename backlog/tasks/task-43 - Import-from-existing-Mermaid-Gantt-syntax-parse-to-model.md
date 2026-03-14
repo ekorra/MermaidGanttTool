@@ -1,10 +1,10 @@
 ---
 id: TASK-43
 title: Import from existing Mermaid Gantt syntax (parse to model)
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-13'
-updated_date: '2026-03-14 19:06'
+updated_date: '2026-03-14 21:43'
 labels:
   - ux
   - import

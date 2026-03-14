@@ -8,6 +8,7 @@ export interface GanttStore {
   mermaidSyntax: string
 
   // Chart-level
+  replaceChart: (chart: GanttChart) => void
   updateChartMeta: (patch: Partial<Omit<GanttChart, 'sections'>>) => void
 
   // Sections
@@ -190,9 +191,14 @@ export function useGanttStore(initial?: GanttChart): GanttStore {
     })
   }, [persistingSetChart])
 
+  const replaceChart = useCallback((newChart: GanttChart) => {
+    persistingSetChart(() => newChart)
+  }, [persistingSetChart])
+
   return {
     chart,
     mermaidSyntax,
+    replaceChart,
     updateChartMeta,
     addSection,
     updateSection,

@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import './styles/global.css'
 import { isDarkActive, toggleTheme } from './utils/theme'
 import { useGanttStore } from './state/useGanttStore'
+import { parseGantt, isMermaidGantt } from './model/import'
 import { Toolbar } from './components/shared/Toolbar'
 import { SettingsPanel } from './components/shared/SettingsPanel'
 import { InfoPanel } from './components/shared/InfoPanel'
@@ -75,6 +76,29 @@ export function App() {
     void navigator.clipboard.writeText(store.mermaidSyntax)
   }
 
+  const handleImport = async () => {
+    let text: string
+    try {
+      text = await navigator.clipboard.readText()
+    } catch {
+      alert('Could not read clipboard. Make sure the browser has clipboard permission.')
+      return
+    }
+    if (!isMermaidGantt(text)) {
+      alert('No Mermaid Gantt diagram found in clipboard.')
+      return
+    }
+    const parsed = parseGantt(text)
+    if (!parsed) {
+      alert('Could not parse the Mermaid Gantt diagram in clipboard.')
+      return
+    }
+    if (window.confirm('Import Mermaid Gantt from clipboard? This will replace the current diagram.')) {
+      store.replaceChart(parsed)
+      setSelectedTaskId(null)
+    }
+  }
+
   const taskExists = selectedTaskId !== null &&
     store.chart.sections.some(s => s.tasks.some(t => t.id === selectedTaskId))
   const resolvedSelected = taskExists ? selectedTaskId : null
@@ -92,6 +116,7 @@ export function App() {
         onSettingsOpen={() => setSettingsOpen(true)}
         onInfoOpen={() => setInfoOpen(true)}
         onExport={handleExport}
+        onImport={() => { void handleImport() }}
         previewOpen={previewOpen}
         onTogglePreview={togglePreview}
         isDark={isDark}

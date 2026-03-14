@@ -4,13 +4,14 @@ interface ToolbarProps {
   onSettingsOpen: () => void
   onInfoOpen: () => void
   onExport: () => void
+  onImport: () => void
   previewOpen: boolean
   onTogglePreview: () => void
   isDark: boolean
   onToggleTheme: () => void
 }
 
-export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onExport, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
+export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onExport, onImport, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
   return (
     <header style={{
       height: 'var(--toolbar-height)',
@@ -101,6 +102,27 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
       >
         {isDark ? '☀' : '🌙'}
+      </button>
+
+      <button
+        onClick={onImport}
+        title="Paste Mermaid from clipboard"
+        aria-label="Paste Mermaid from clipboard"
+        style={{
+          padding: '5px 10px',
+          border: '1px solid var(--color-border)',
+          borderRadius: 4,
+          background: 'var(--color-bg)',
+          color: 'var(--color-text-muted)',
+          fontSize: 13,
+          fontWeight: 500,
+          lineHeight: 1,
+          cursor: 'pointer',
+        }}
+        onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
+        onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
+      >
+        Paste Mermaid
       </button>
 
       {/* Preview toggle */}
