@@ -1,15 +1,19 @@
 ---
 id: TASK-48
 title: 'Mobile: show preview-only mode and inform desktop-only editing'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-15 18:20'
-labels: [ux, mobile]
+updated_date: '2026-03-15 18:44'
+labels:
+  - ux
+  - mobile
 dependencies: []
 ---
 
 ## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 The full editor (canvas drag/resize, 3-panel layout) is fundamentally a desktop experience
 and is not worth porting to mobile. However, mobile users may open a shared link to view
 a diagram, and should get a decent experience instead of a broken UI.
@@ -32,15 +36,18 @@ More reliable than user-agent sniffing.
   - Load the shared diagram
   - Show only the Mermaid preview renderer (read-only, no editing controls)
   - Small note: "Open on a desktop to edit this diagram"
+<!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
-- [ ] Mobile without share param: full-screen "desktop only" message shown
-- [ ] Mobile with `?share=id`: diagram loads and renders as Mermaid SVG, no editor
-- [ ] Desktop is completely unaffected by this change
+<!-- AC:BEGIN -->
+- [ ] #1 Mobile without share param: full-screen "desktop only" message shown
+- [ ] #2 Mobile with `?share=id`: diagram loads and renders as Mermaid SVG, no editor
+- [ ] #3 Desktop is completely unaffected by this change
+<!-- AC:END -->
 
 ## Definition of Done
-
-- [ ] Code implemented and TypeScript-clean
-- [ ] Tests passing (`npm run typecheck && npm run test:run`)
-- [ ] Committed and pushed
+<!-- DOD:BEGIN -->
+- [ ] #1 Code implemented and TypeScript-clean
+- [ ] #2 Tests passing (`npm run typecheck && npm run test:run`)
+- [ ] #3 Committed and pushed
+<!-- DOD:END -->
