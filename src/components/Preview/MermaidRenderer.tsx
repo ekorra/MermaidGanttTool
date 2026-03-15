@@ -1,7 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
-import mermaid from 'mermaid'
+import type mermaidType from 'mermaid'
 
-mermaid.initialize({ startOnLoad: false, theme: 'default' })
+// Mermaid is loaded lazily on first render — keeps it out of the main bundle
+let mermaidInstance: typeof mermaidType | null = null
+let mermaidLoadPromise: Promise<typeof mermaidType> | null = null
+
+function getMermaid(): Promise<typeof mermaidType> {
+  if (mermaidInstance) return Promise.resolve(mermaidInstance)
+  if (!mermaidLoadPromise) {
+    mermaidLoadPromise = import('mermaid').then(m => {
+      m.default.initialize({ startOnLoad: false, theme: 'default' })
+      mermaidInstance = m.default
+      return m.default
+    })
+  }
+  return mermaidLoadPromise
+}
 
 let renderCounter = 0
 
@@ -21,18 +35,19 @@ export function MermaidRenderer({ syntax }: MermaidRendererProps) {
       if (!containerRef.current) return
       const id = `mermaid-${++renderCounter}`
 
-      void mermaid.render(id, syntax)
-        .then(({ svg }) => {
-          if (containerRef.current) {
-            containerRef.current.innerHTML = svg
-            setError(null)
-          }
-        })
-        .catch((err: unknown) => {
-          // Invalid syntax during live editing is expected — show non-destructive error
-          const msg = err instanceof Error ? err.message : String(err)
-          setError(msg)
-        })
+      void getMermaid().then(mermaid =>
+        mermaid.render(id, syntax)
+          .then(({ svg }) => {
+            if (containerRef.current) {
+              containerRef.current.innerHTML = svg
+              setError(null)
+            }
+          })
+          .catch((err: unknown) => {
+            const msg = err instanceof Error ? err.message : String(err)
+            setError(msg)
+          })
+      )
     }, 300)
 
     return () => {
