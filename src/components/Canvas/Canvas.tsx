@@ -189,7 +189,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
 
         {/* Today marker */}
         {todayX !== null && todayX >= 0 && todayX <= scale.canvasWidth && (
-          <g style={{ pointerEvents: 'none' }}>
+          <g data-today-marker="true" style={{ pointerEvents: 'none' }}>
             <line x1={todayX} y1={0} x2={todayX} y2={svgHeight} stroke="#ff6b6b" strokeWidth={1.5} strokeDasharray="4 3" />
             <text x={todayX + 4} y={12} fontSize={10} fill="#ff6b6b" fontWeight={600}>Today</text>
           </g>

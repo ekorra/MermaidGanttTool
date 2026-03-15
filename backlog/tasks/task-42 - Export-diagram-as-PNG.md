@@ -1,10 +1,10 @@
 ---
 id: TASK-42
 title: Export diagram as PNG
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-13'
-updated_date: '2026-03-14 19:06'
+updated_date: '2026-03-15 06:09'
 labels:
   - ux
   - export

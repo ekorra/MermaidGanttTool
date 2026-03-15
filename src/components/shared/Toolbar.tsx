@@ -5,13 +5,14 @@ interface ToolbarProps {
   onInfoOpen: () => void
   onExport: () => void
   onImport: () => void
+  onExportPng: () => void
   previewOpen: boolean
   onTogglePreview: () => void
   isDark: boolean
   onToggleTheme: () => void
 }
 
-export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onExport, onImport, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
+export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onExport, onImport, onExportPng, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
   return (
     <header style={{
       height: 'var(--toolbar-height)',
@@ -150,9 +151,26 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
       </button>
 
       <button
-        onClick={onExport}
+        onClick={onExportPng}
         style={{
           marginLeft: 'auto',
+          padding: '6px 14px',
+          background: 'var(--color-bg)',
+          color: 'var(--color-text-muted)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 4,
+          fontWeight: 500,
+          cursor: 'pointer',
+        }}
+        onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
+        onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
+      >
+        Download PNG
+      </button>
+
+      <button
+        onClick={onExport}
+        style={{
           padding: '6px 14px',
           background: 'var(--color-primary)',
           color: '#fff',

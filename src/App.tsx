@@ -6,6 +6,7 @@ import { parseGantt, isMermaidGantt } from './model/import'
 import { Toolbar } from './components/shared/Toolbar'
 import { SettingsPanel } from './components/shared/SettingsPanel'
 import { InfoPanel } from './components/shared/InfoPanel'
+import { ExportPngModal } from './components/shared/ExportPngModal'
 import { TaskList } from './components/Editor/TaskList'
 import { TaskDetailPanel } from './components/Editor/TaskDetailPanel'
 import { Canvas } from './components/Canvas/Canvas'
@@ -30,6 +31,7 @@ export function App() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+  const [exportPngOpen, setExportPngOpen] = useState(false)
   const [isDark, setIsDark] = useState(() => isDarkActive())
 
   const handleToggleTheme = () => {
@@ -117,6 +119,7 @@ export function App() {
         onInfoOpen={() => setInfoOpen(true)}
         onExport={handleExport}
         onImport={() => { void handleImport() }}
+        onExportPng={() => setExportPngOpen(true)}
         previewOpen={previewOpen}
         onTogglePreview={togglePreview}
         isDark={isDark}
@@ -171,6 +174,7 @@ export function App() {
       )}
 
       {infoOpen && <InfoPanel onClose={() => setInfoOpen(false)} />}
+      {exportPngOpen && <ExportPngModal chart={store.chart} onClose={() => setExportPngOpen(false)} />}
     </div>
   )
 }
