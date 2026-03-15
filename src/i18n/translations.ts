@@ -109,6 +109,24 @@ export interface Translations {
   noMermaidInClipboard: string
   mermaidParseError: string
   importConfirm: string
+
+  // Share
+  shareButton: string
+  shareModalTitle: string
+  shareModalCreating: string
+  shareModalUrlLabel: string
+  shareCopyLink: string
+  shareLinkCopied: string
+  shareModalLimitations: string[]
+  shareModalError: (error: string) => string
+  sharedBannerInfo: string
+  sharedBannerExpiry: string
+  sharedBannerSave: string
+  sharedBannerSaving: string
+  sharedBannerSaved: string
+  sharedBannerSaveError: (error: string) => string
+  shareLoadNotFound: string
+  shareLoadError: string
 }
 
 const en: Translations = {
@@ -241,6 +259,29 @@ const en: Translations = {
   noMermaidInClipboard: 'No Mermaid Gantt diagram found in clipboard.',
   mermaidParseError: 'Could not parse the Mermaid Gantt diagram in clipboard.',
   importConfirm: 'Import Mermaid Gantt from clipboard? This will replace the current diagram.',
+
+  // Share
+  shareButton: 'Share',
+  shareModalTitle: 'Share diagram',
+  shareModalCreating: 'Creating link…',
+  shareModalUrlLabel: 'Share link',
+  shareCopyLink: 'Copy link',
+  shareLinkCopied: 'Copied!',
+  shareModalLimitations: [
+    'Anyone with the link can view and edit the diagram',
+    'Last save wins — simultaneous edits may overwrite each other',
+    'Link expires 30 days after the last save',
+    'No version history — saving overwrites the previous state',
+  ],
+  shareModalError: (error) => `Could not create share link: ${error}`,
+  sharedBannerInfo: 'Shared diagram — anyone with this link can edit',
+  sharedBannerExpiry: 'Expires 30 days after last save',
+  sharedBannerSave: 'Save changes',
+  sharedBannerSaving: 'Saving…',
+  sharedBannerSaved: 'Saved!',
+  sharedBannerSaveError: (error) => `Save failed: ${error}`,
+  shareLoadNotFound: 'This share link has expired or does not exist.',
+  shareLoadError: 'Could not load the shared diagram.',
 }
 
 const no: Translations = {
@@ -373,6 +414,29 @@ const no: Translations = {
   noMermaidInClipboard: 'Ingen Mermaid Gantt-diagram funnet i utklippstavlen.',
   mermaidParseError: 'Kunne ikke tolke Mermaid Gantt-diagrammet i utklippstavlen.',
   importConfirm: 'Importer Mermaid Gantt fra utklippstavlen? Dette erstatter gjeldende diagram.',
+
+  // Share
+  shareButton: 'Del',
+  shareModalTitle: 'Del diagram',
+  shareModalCreating: 'Oppretter lenke…',
+  shareModalUrlLabel: 'Delingslenke',
+  shareCopyLink: 'Kopier lenke',
+  shareLinkCopied: 'Kopiert!',
+  shareModalLimitations: [
+    'Alle med lenken kan se og redigere diagrammet',
+    'Siste lagring vinner — samtidige endringer kan overskrives',
+    'Lenken utløper 30 dager etter siste lagring',
+    'Ingen versjonshistorikk — lagring overskriver forrige tilstand',
+  ],
+  shareModalError: (error) => `Kunne ikke opprette delingslenke: ${error}`,
+  sharedBannerInfo: 'Delt diagram — alle med lenken kan redigere',
+  sharedBannerExpiry: 'Utløper 30 dager etter siste lagring',
+  sharedBannerSave: 'Lagre endringer',
+  sharedBannerSaving: 'Lagrer…',
+  sharedBannerSaved: 'Lagret!',
+  sharedBannerSaveError: (error) => `Lagring feilet: ${error}`,
+  shareLoadNotFound: 'Denne delingslenken har utløpt eller eksisterer ikke.',
+  shareLoadError: 'Kunne ikke laste det delte diagrammet.',
 }
 
 const es: Translations = {
@@ -505,6 +569,29 @@ const es: Translations = {
   noMermaidInClipboard: 'No se encontró ningún diagrama Mermaid Gantt en el portapapeles.',
   mermaidParseError: 'No se pudo analizar el diagrama Mermaid Gantt del portapapeles.',
   importConfirm: '¿Importar Mermaid Gantt desde el portapapeles? Esto reemplazará el diagrama actual.',
+
+  // Share
+  shareButton: 'Compartir',
+  shareModalTitle: 'Compartir diagrama',
+  shareModalCreating: 'Creando enlace…',
+  shareModalUrlLabel: 'Enlace para compartir',
+  shareCopyLink: 'Copiar enlace',
+  shareLinkCopied: '¡Copiado!',
+  shareModalLimitations: [
+    'Cualquiera con el enlace puede ver y editar el diagrama',
+    'Gana el último guardado — los cambios simultáneos pueden sobrescribirse',
+    'El enlace caduca 30 días después del último guardado',
+    'Sin historial de versiones — guardar sobrescribe el estado anterior',
+  ],
+  shareModalError: (error) => `No se pudo crear el enlace: ${error}`,
+  sharedBannerInfo: 'Diagrama compartido — cualquiera con el enlace puede editar',
+  sharedBannerExpiry: 'Caduca 30 días después del último guardado',
+  sharedBannerSave: 'Guardar cambios',
+  sharedBannerSaving: 'Guardando…',
+  sharedBannerSaved: '¡Guardado!',
+  sharedBannerSaveError: (error) => `Error al guardar: ${error}`,
+  shareLoadNotFound: 'Este enlace ha caducado o no existe.',
+  shareLoadError: 'No se pudo cargar el diagrama compartido.',
 }
 
 const de: Translations = {
@@ -637,6 +724,29 @@ const de: Translations = {
   noMermaidInClipboard: 'Kein Mermaid-Gantt-Diagramm in der Zwischenablage gefunden.',
   mermaidParseError: 'Das Mermaid-Gantt-Diagramm in der Zwischenablage konnte nicht analysiert werden.',
   importConfirm: 'Mermaid-Gantt aus der Zwischenablage importieren? Das aktuelle Diagramm wird ersetzt.',
+
+  // Share
+  shareButton: 'Teilen',
+  shareModalTitle: 'Diagramm teilen',
+  shareModalCreating: 'Link wird erstellt…',
+  shareModalUrlLabel: 'Freigabelink',
+  shareCopyLink: 'Link kopieren',
+  shareLinkCopied: 'Kopiert!',
+  shareModalLimitations: [
+    'Jeder mit dem Link kann das Diagramm ansehen und bearbeiten',
+    'Letztes Speichern gewinnt — gleichzeitige Änderungen können überschrieben werden',
+    'Link läuft 30 Tage nach dem letzten Speichern ab',
+    'Kein Versionsverlauf — Speichern überschreibt den vorherigen Stand',
+  ],
+  shareModalError: (error) => `Link konnte nicht erstellt werden: ${error}`,
+  sharedBannerInfo: 'Geteiltes Diagramm — jeder mit diesem Link kann es bearbeiten',
+  sharedBannerExpiry: 'Läuft 30 Tage nach dem letzten Speichern ab',
+  sharedBannerSave: 'Änderungen speichern',
+  sharedBannerSaving: 'Speichert…',
+  sharedBannerSaved: 'Gespeichert!',
+  sharedBannerSaveError: (error) => `Speichern fehlgeschlagen: ${error}`,
+  shareLoadNotFound: 'Dieser Freigabelink ist abgelaufen oder existiert nicht.',
+  shareLoadError: 'Das geteilte Diagramm konnte nicht geladen werden.',
 }
 
 export const translations: Record<Locale, Translations> = { en, no, es, de }

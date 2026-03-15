@@ -4,10 +4,13 @@ import { isDarkActive, toggleTheme } from './utils/theme'
 import { useGanttStore } from './state/useGanttStore'
 import { parseGantt, isMermaidGantt } from './model/import'
 import { useLocale } from './i18n/LocaleContext'
+import { getShareIdFromUrl, loadShare } from './utils/shareApi'
 import { Toolbar } from './components/shared/Toolbar'
 import { SettingsPanel } from './components/shared/SettingsPanel'
 import { InfoPanel } from './components/shared/InfoPanel'
 import { ExportPngModal } from './components/shared/ExportPngModal'
+import { ShareModal } from './components/shared/ShareModal'
+import { SharedModeBanner } from './components/shared/SharedModeBanner'
 import { TaskList } from './components/Editor/TaskList'
 import { TaskDetailPanel } from './components/Editor/TaskDetailPanel'
 import { Canvas } from './components/Canvas/Canvas'
@@ -34,7 +37,25 @@ export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
   const [exportPngOpen, setExportPngOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+  const [shareId, setShareId] = useState<string | null>(null)
+  const [shareLoadError, setShareLoadError] = useState<string | null>(null)
   const [isDark, setIsDark] = useState(() => isDarkActive())
+
+  // Load shared diagram from ?share= query param on mount
+  useEffect(() => {
+    const id = getShareIdFromUrl()
+    if (!id) return
+    loadShare(id).then(result => {
+      if (result.ok) {
+        store.replaceChart(result.diagram)
+        setShareId(id)
+      } else {
+        setShareLoadError(result.notFound ? t.shareLoadNotFound : t.shareLoadError)
+      }
+    }).catch(() => setShareLoadError(t.shareLoadError))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleToggleTheme = () => {
     const dark = toggleTheme()
@@ -109,8 +130,8 @@ export function App() {
 
   return (
     <div style={{
-      display: 'grid',
-      gridTemplateRows: `var(--toolbar-height) 1fr${previewOpen ? ` ${previewHeight}px` : ''}`,
+      display: 'flex',
+      flexDirection: 'column',
       height: '100dvh',
       overflow: 'hidden',
     }}>
@@ -122,17 +143,43 @@ export function App() {
         onExport={handleExport}
         onImport={() => { void handleImport() }}
         onExportPng={() => setExportPngOpen(true)}
+        onShare={() => setShareOpen(true)}
         previewOpen={previewOpen}
         onTogglePreview={togglePreview}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
       />
 
+      {shareId && <SharedModeBanner shareId={shareId} chart={store.chart} />}
+
+      {shareLoadError && (
+        <div style={{
+          background: 'var(--color-danger, #d32f2f)',
+          color: '#fff',
+          padding: '6px 16px',
+          fontSize: 13,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexShrink: 0,
+        }}>
+          <span>{shareLoadError}</span>
+          <button
+            onClick={() => setShareLoadError(null)}
+            style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: 16 }}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Main area: Oppgaveliste + Tidslinje + Detaljpanel */}
       <div style={{
+        flex: 1,
         display: 'grid',
         gridTemplateColumns: `var(--editor-width) 1fr${resolvedSelected ? ' var(--detail-width)' : ''}`,
         overflow: 'hidden',
+        minHeight: 0,
       }}>
         <div style={{ borderRight: '1px solid var(--color-border)', background: 'var(--color-surface)', overflow: 'hidden' }}>
           <TaskList store={store} selectedTaskId={resolvedSelected} onSelectTask={setSelectedTaskId} />
@@ -149,7 +196,7 @@ export function App() {
 
       {/* Preview panel */}
       {previewOpen && (
-        <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--color-border)', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--color-border)', overflow: 'hidden', height: previewHeight, flexShrink: 0 }}>
           {/* Resize handle */}
           <div
             onPointerDown={onResizePointerDown}
@@ -177,6 +224,7 @@ export function App() {
 
       {infoOpen && <InfoPanel onClose={() => setInfoOpen(false)} />}
       {exportPngOpen && <ExportPngModal chart={store.chart} onClose={() => setExportPngOpen(false)} />}
+      {shareOpen && <ShareModal chart={store.chart} onClose={() => setShareOpen(false)} />}
     </div>
   )
 }

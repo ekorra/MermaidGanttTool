@@ -15,7 +15,9 @@
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
+    "@upstash/redis": "^1.37.0",
     "mermaid": "^11.13.0",
+    "nanoid": "^5.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
@@ -28,6 +30,7 @@
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vercel/node": "^5.6.15",
     "@vitejs/plugin-react": "^4.7.0",
     "@vitest/ui": "^2.1.9",
     "eslint": "^9.39.4",
