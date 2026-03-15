@@ -39,14 +39,15 @@ export async function createShare(diagram: GanttChart): Promise<ShareResult> {
       const { id } = await res.json() as { id: string }
       return { ok: true, id }
     }
+    // API responded with an error — do not fall back to localStorage
+    const body = await res.json().catch(() => ({})) as { error?: string }
+    return { ok: false, error: body.error ?? `HTTP ${res.status}` }
   } catch {
-    // API unavailable — fall through to localStorage
+    // True network error (API not reachable) — fall back to localStorage for local dev
+    const id = nanoid(10)
+    lsSet(id, diagram)
+    return { ok: true, id }
   }
-
-  // Fallback: store in localStorage (local dev or API down)
-  const id = nanoid(10)
-  lsSet(id, diagram)
-  return { ok: true, id }
 }
 
 export async function loadShare(id: string): Promise<LoadResult> {
@@ -80,13 +81,13 @@ export async function saveShare(id: string, diagram: GanttChart): Promise<SaveRe
       body: JSON.stringify(diagram),
     })
     if (res.ok) return { ok: true }
+    const body = await res.json().catch(() => ({})) as { error?: string }
+    return { ok: false, error: body.error ?? `HTTP ${res.status}` }
   } catch {
-    // API unavailable — fall through to localStorage
+    // True network error — fall back to localStorage for local dev
+    lsSet(id, diagram)
+    return { ok: true }
   }
-
-  // Fallback: update localStorage
-  lsSet(id, diagram)
-  return { ok: true }
 }
 
 /** Returns the share ID from the current URL's ?share= query param, or null. */
