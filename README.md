@@ -1,4 +1,6 @@
-# MermaidGanttTool
+# GanttMaker
+
+**[ganttmaker-ekorra.vercel.app](https://ganttmaker-ekorra.vercel.app/)** — live demo
 
 A WYSIWYG web app for creating [Mermaid](https://mermaid.js.org/) Gantt diagrams. Edit visually, export valid Mermaid syntax — ready to paste into GitHub, Confluence, or any Markdown-based platform.
 
@@ -110,10 +112,8 @@ Bug reports and feature ideas are welcome as [GitHub Issues](https://github.com/
 
 See [backlog/drafts/](backlog/drafts/) for planned features, including:
 - Browser extension (Chrome/Firefox)
-- PNG export
-- Import from existing Mermaid syntax
 - Zoom control (pxPerDay slider)
-- Multilingual UI (English, Norwegian, Spanish, German)
+- Drag and drop tasks between sections
 
 ## License
 
