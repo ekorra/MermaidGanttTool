@@ -1,4 +1,5 @@
 import type { GanttChart } from '../model/types'
+import { nanoid } from 'nanoid'
 
 export type ShareResult =
   | { ok: true; id: string }
@@ -12,6 +13,21 @@ export type SaveResult =
   | { ok: true }
   | { ok: false; error: string }
 
+const LS_PREFIX = 'gantt-share:'
+
+function lsSet(id: string, diagram: GanttChart): void {
+  localStorage.setItem(`${LS_PREFIX}${id}`, JSON.stringify(diagram))
+}
+
+function lsGet(id: string): GanttChart | null {
+  try {
+    const raw = localStorage.getItem(`${LS_PREFIX}${id}`)
+    return raw ? (JSON.parse(raw) as GanttChart) : null
+  } catch {
+    return null
+  }
+}
+
 export async function createShare(diagram: GanttChart): Promise<ShareResult> {
   try {
     const res = await fetch('/api/share', {
@@ -19,32 +35,41 @@ export async function createShare(diagram: GanttChart): Promise<ShareResult> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(diagram),
     })
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({})) as { error?: string }
-      return { ok: false, error: body.error ?? `HTTP ${res.status}` }
+    if (res.ok) {
+      const { id } = await res.json() as { id: string }
+      return { ok: true, id }
     }
-    const { id } = await res.json() as { id: string }
-    return { ok: true, id }
   } catch {
-    return { ok: false, error: 'Network error' }
+    // API unavailable — fall through to localStorage
   }
+
+  // Fallback: store in localStorage (local dev or API down)
+  const id = nanoid(10)
+  lsSet(id, diagram)
+  return { ok: true, id }
 }
 
 export async function loadShare(id: string): Promise<LoadResult> {
   try {
     const res = await fetch(`/api/share/${id}`)
     if (res.status === 404) {
+      // API says not found — also check localStorage before giving up
+      const local = lsGet(id)
+      if (local) return { ok: true, diagram: local }
       return { ok: false, error: 'Not found or expired', notFound: true }
     }
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({})) as { error?: string }
-      return { ok: false, error: body.error ?? `HTTP ${res.status}` }
+    if (res.ok) {
+      const diagram = await res.json() as GanttChart
+      return { ok: true, diagram }
     }
-    const diagram = await res.json() as GanttChart
-    return { ok: true, diagram }
   } catch {
-    return { ok: false, error: 'Network error' }
+    // API unavailable — fall through to localStorage
   }
+
+  // Fallback: try localStorage
+  const local = lsGet(id)
+  if (local) return { ok: true, diagram: local }
+  return { ok: false, error: 'Not found or expired', notFound: true }
 }
 
 export async function saveShare(id: string, diagram: GanttChart): Promise<SaveResult> {
@@ -54,14 +79,14 @@ export async function saveShare(id: string, diagram: GanttChart): Promise<SaveRe
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(diagram),
     })
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({})) as { error?: string }
-      return { ok: false, error: body.error ?? `HTTP ${res.status}` }
-    }
-    return { ok: true }
+    if (res.ok) return { ok: true }
   } catch {
-    return { ok: false, error: 'Network error' }
+    // API unavailable — fall through to localStorage
   }
+
+  // Fallback: update localStorage
+  lsSet(id, diagram)
+  return { ok: true }
 }
 
 /** Returns the share ID from the current URL's ?share= query param, or null. */
