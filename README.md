@@ -15,7 +15,11 @@ A WYSIWYG web app for creating [Mermaid](https://mermaid.js.org/) Gantt diagrams
 - **Dark mode** — follows system preference with manual toggle in the toolbar
 - **Live preview** — switch between raw Mermaid syntax and the rendered diagram
 - **Export** — copy valid Mermaid syntax to clipboard in one click
+- **Import** — paste any Mermaid Gantt syntax from clipboard to load it into the editor
+- **PNG export** — download the timeline as a 2× resolution PNG
+- **Share** — generate a short link anyone can open and edit; expires 30 days after last save
 - **Persistence** — your diagram is saved automatically in `localStorage`
+- **Multilingual** — English, Norwegian, Spanish, and German (auto-detects browser language)
 
 ## Usage
 
@@ -23,7 +27,7 @@ Open the app in a browser. No login or setup required.
 
 | Area | What you can do |
 |------|----------------|
-| **Toolbar** | Set the diagram title and date format |
+| **Toolbar** | Set the diagram title; copy/paste Mermaid syntax; share, export PNG, toggle preview |
 | **Task list (left)** | Add/rename/delete sections and tasks; click a task to open the detail editor |
 | **Detail editor (right)** | Edit task name, status, dates, duration, dependencies, color, and URL |
 | **Canvas (center)** | Drag tasks to reschedule; drag left/right edge to resize; click to select |
@@ -114,6 +118,8 @@ See [backlog/drafts/](backlog/drafts/) for planned features, including:
 - Browser extension (Chrome/Firefox)
 - Zoom control (pxPerDay slider)
 - Drag and drop tasks between sections
+- Error monitoring (Sentry)
+- Persistent diagram storage with user accounts (Supabase)
 
 ## License
 
