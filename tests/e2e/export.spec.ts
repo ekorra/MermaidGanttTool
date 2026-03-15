@@ -48,7 +48,7 @@ test('preview tab switches to Mermaid renderer', async ({ page }) => {
   await openPreview(page)
 
   // Click the "preview" tab (lowercase text in the tab bar)
-  await page.getByRole('button', { name: 'preview', exact: true }).click()
+  await page.getByRole('button', { name: 'Preview', exact: true }).click()
 
   // Mermaid renders an SVG into the renderer container (300ms debounce)
   await expect(page.getByTestId('mermaid-renderer').locator('svg')).toBeVisible({ timeout: 3000 })

@@ -34,7 +34,7 @@ test('adds a new section', async ({ page }) => {
   await page.getByTestId('add-section').click()
 
   const taskList = page.getByTestId('task-list')
-  await expect(taskList.getByText('New Section')).toBeVisible()
+  await expect(taskList.getByText('New Section', { exact: true })).toBeVisible()
 
   // Add a task so the section appears in the exported syntax (empty sections are skipped)
   await page.getByTestId('add-task').last().click()
@@ -71,7 +71,7 @@ test('adds a task to a section', async ({ page }) => {
 
   // New task appears in the task list (4 tasks total)
   const taskList = page.getByTestId('task-list')
-  await expect(taskList.getByText('New Task')).toBeVisible()
+  await expect(taskList.getByText('New Task', { exact: true })).toBeVisible()
   await openPreview(page)
   await expect(page.getByTestId('syntax-pane')).toContainText('New Task')
 })
