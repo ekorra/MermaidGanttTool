@@ -13,7 +13,14 @@ export interface Translations {
   downloadPng: string
   copyMermaid: string
 
-  // Settings panel
+  // Settings panel — appearance
+  appearanceLabel: string
+  themeLabel: string
+  themeLightOption: string
+  themeDarkOption: string
+  themeSystemOption: string
+
+  // Settings panel — diagram
   settingsTitle: string
   dateFormatLabel: string
   axisFormatLabel: string
@@ -148,7 +155,14 @@ const en: Translations = {
   downloadPng: 'Download PNG',
   copyMermaid: 'Copy Mermaid',
 
-  // Settings panel
+  // Settings panel — appearance
+  appearanceLabel: 'Appearance',
+  themeLabel: 'Theme',
+  themeLightOption: 'Light',
+  themeDarkOption: 'Dark',
+  themeSystemOption: 'System',
+
+  // Settings panel — diagram
   settingsTitle: 'Diagram settings',
   dateFormatLabel: 'Date format',
   axisFormatLabel: 'Axis format',
@@ -309,7 +323,14 @@ const no: Translations = {
   downloadPng: 'Last ned PNG',
   copyMermaid: 'Kopier Mermaid',
 
-  // Settings panel
+  // Settings panel — appearance
+  appearanceLabel: 'Utseende',
+  themeLabel: 'Tema',
+  themeLightOption: 'Lyst',
+  themeDarkOption: 'Mørkt',
+  themeSystemOption: 'System',
+
+  // Settings panel — diagram
   settingsTitle: 'Diagraminnstillinger',
   dateFormatLabel: 'Datoformat',
   axisFormatLabel: 'Akseformat',
@@ -470,7 +491,14 @@ const es: Translations = {
   downloadPng: 'Descargar PNG',
   copyMermaid: 'Copiar Mermaid',
 
-  // Settings panel
+  // Settings panel — appearance
+  appearanceLabel: 'Apariencia',
+  themeLabel: 'Tema',
+  themeLightOption: 'Claro',
+  themeDarkOption: 'Oscuro',
+  themeSystemOption: 'Sistema',
+
+  // Settings panel — diagram
   settingsTitle: 'Configuración del diagrama',
   dateFormatLabel: 'Formato de fecha',
   axisFormatLabel: 'Formato de eje',
@@ -631,7 +659,14 @@ const de: Translations = {
   downloadPng: 'PNG herunterladen',
   copyMermaid: 'Mermaid kopieren',
 
-  // Settings panel
+  // Settings panel — appearance
+  appearanceLabel: 'Erscheinungsbild',
+  themeLabel: 'Design',
+  themeLightOption: 'Hell',
+  themeDarkOption: 'Dunkel',
+  themeSystemOption: 'System',
+
+  // Settings panel — diagram
   settingsTitle: 'Diagrammeinstellungen',
   dateFormatLabel: 'Datumsformat',
   axisFormatLabel: 'Achsenformat',

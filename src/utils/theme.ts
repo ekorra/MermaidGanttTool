@@ -5,6 +5,15 @@ export function initTheme(): void {
   applyTheme(saved ?? 'system')
 }
 
+export function getThemeSetting(): ThemeSetting {
+  return (localStorage.getItem('theme') as ThemeSetting | null) ?? 'system'
+}
+
+export function setTheme(setting: ThemeSetting): void {
+  localStorage.setItem('theme', setting)
+  applyTheme(setting)
+}
+
 export function toggleTheme(): boolean {
   const currentlyDark = isDarkActive()
   const next: ThemeSetting = currentlyDark ? 'light' : 'dark'

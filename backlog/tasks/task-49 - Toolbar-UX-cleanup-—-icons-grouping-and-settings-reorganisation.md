@@ -1,15 +1,19 @@
 ---
 id: TASK-49
 title: 'Toolbar UX cleanup — icons, grouping, and settings reorganisation'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-15 19:17'
-labels: [ux, toolbar]
+updated_date: '2026-03-15 19:37'
+labels:
+  - ux
+  - toolbar
 dependencies: []
 ---
 
 ## Description
 
+<!-- SECTION:DESCRIPTION:BEGIN -->
 The toolbar has grown organically and needs a cleanup. Buttons lack icons, grouping is
 unclear, and settings are mixed with toolbar actions. Goal: a clean, scannable toolbar
 where every button is self-explanatory at a glance.
@@ -56,19 +60,22 @@ visually separated from the Mermaid-specific settings (date format, axis format,
 ```
 
 Remove the standalone theme toggle button from the toolbar entirely.
+<!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-
-- [ ] Toolbar buttons are grouped: Mermaid actions | Export/share | App (settings + about)
-- [ ] About (ℹ) is the rightmost button
-- [ ] Settings (⚙) is immediately left of About
-- [ ] Paste and Copy Mermaid are adjacent
-- [ ] Every button has an icon and a descriptive tooltip
-- [ ] Light/dark toggle is removed from toolbar and moved to SettingsPanel
-- [ ] SettingsPanel has a clear visual separator between Appearance and Diagram settings
+<!-- AC:BEGIN -->
+- [ ] #1 Toolbar buttons are grouped: Mermaid actions | Export/share | App (settings + about)
+- [ ] #2 About (ℹ) is the rightmost button
+- [ ] #3 Settings (⚙) is immediately left of About
+- [ ] #4 Paste and Copy Mermaid are adjacent
+- [ ] #5 Every button has an icon and a descriptive tooltip
+- [ ] #6 Light/dark toggle is removed from toolbar and moved to SettingsPanel
+- [ ] #7 SettingsPanel has a clear visual separator between Appearance and Diagram settings
+<!-- AC:END -->
 
 ## Definition of Done
-
-- [ ] Code implemented and TypeScript-clean
-- [ ] Tests passing (`npm run typecheck && npm run test:run`)
-- [ ] Committed and pushed
+<!-- DOD:BEGIN -->
+- [ ] #1 Code implemented and TypeScript-clean
+- [ ] #2 Tests passing (`npm run typecheck && npm run test:run`)
+- [ ] #3 Committed and pushed
+<!-- DOD:END -->

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import './styles/global.css'
-import { isDarkActive, toggleTheme } from './utils/theme'
+import { getThemeSetting, setTheme } from './utils/theme'
+import type { ThemeSetting } from './utils/theme'
 import { useGanttStore } from './state/useGanttStore'
 import { parseGantt, isMermaidGantt } from './model/import'
 import { useLocale } from './i18n/LocaleContext'
@@ -40,7 +41,7 @@ export function App() {
   const [shareOpen, setShareOpen] = useState(false)
   const [shareId, setShareId] = useState<string | null>(null)
   const [shareLoadError, setShareLoadError] = useState<string | null>(null)
-  const [isDark, setIsDark] = useState(() => isDarkActive())
+  const [themeSetting, setThemeSetting] = useState<ThemeSetting>(() => getThemeSetting())
 
   // Load shared diagram from ?share= query param on mount
   useEffect(() => {
@@ -57,9 +58,9 @@ export function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleToggleTheme = () => {
-    const dark = toggleTheme()
-    setIsDark(dark)
+  const handleSetTheme = (setting: ThemeSetting) => {
+    setTheme(setting)
+    setThemeSetting(setting)
   }
 
   const [previewOpen, setPreviewOpen] = useState(() => loadPreviewState().open)
@@ -146,8 +147,6 @@ export function App() {
         onShare={() => setShareOpen(true)}
         previewOpen={previewOpen}
         onTogglePreview={togglePreview}
-        isDark={isDark}
-        onToggleTheme={handleToggleTheme}
       />
 
       {shareId && <SharedModeBanner shareId={shareId} chart={store.chart} />}
@@ -219,7 +218,7 @@ export function App() {
       )}
 
       {settingsOpen && (
-        <SettingsPanel chart={store.chart} onUpdate={store.updateChartMeta} onClose={() => setSettingsOpen(false)} />
+        <SettingsPanel chart={store.chart} onUpdate={store.updateChartMeta} themeSetting={themeSetting} onSetTheme={handleSetTheme} onClose={() => setSettingsOpen(false)} />
       )}
 
       {infoOpen && <InfoPanel onClose={() => setInfoOpen(false)} />}
