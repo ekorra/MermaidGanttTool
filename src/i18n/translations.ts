@@ -127,6 +127,12 @@ export interface Translations {
   sharedBannerSaveError: (error: string) => string
   shareLoadNotFound: string
   shareLoadError: string
+
+  // Mobile
+  mobileHeading: string
+  mobileBody: string
+  mobileShareNote: string
+  mobileLoading: string
 }
 
 const en: Translations = {
@@ -282,6 +288,12 @@ const en: Translations = {
   sharedBannerSaveError: (error) => `Save failed: ${error}`,
   shareLoadNotFound: 'This share link has expired or does not exist.',
   shareLoadError: 'Could not load the shared diagram.',
+
+  // Mobile
+  mobileHeading: 'GanttMaker is designed for desktop',
+  mobileBody: 'Open on a computer to create and edit diagrams.',
+  mobileShareNote: 'Open on a desktop to edit this diagram.',
+  mobileLoading: 'Loading diagram…',
 }
 
 const no: Translations = {
@@ -437,6 +449,12 @@ const no: Translations = {
   sharedBannerSaveError: (error) => `Lagring feilet: ${error}`,
   shareLoadNotFound: 'Denne delingslenken har utløpt eller eksisterer ikke.',
   shareLoadError: 'Kunne ikke laste det delte diagrammet.',
+
+  // Mobile
+  mobileHeading: 'GanttMaker er laget for desktop',
+  mobileBody: 'Åpne på en datamaskin for å opprette og redigere diagrammer.',
+  mobileShareNote: 'Åpne på en datamaskin for å redigere dette diagrammet.',
+  mobileLoading: 'Laster diagram…',
 }
 
 const es: Translations = {
@@ -592,6 +610,12 @@ const es: Translations = {
   sharedBannerSaveError: (error) => `Error al guardar: ${error}`,
   shareLoadNotFound: 'Este enlace ha caducado o no existe.',
   shareLoadError: 'No se pudo cargar el diagrama compartido.',
+
+  // Mobile
+  mobileHeading: 'GanttMaker está diseñado para escritorio',
+  mobileBody: 'Abre en un ordenador para crear y editar diagramas.',
+  mobileShareNote: 'Abre en un ordenador para editar este diagrama.',
+  mobileLoading: 'Cargando diagrama…',
 }
 
 const de: Translations = {
@@ -747,6 +771,12 @@ const de: Translations = {
   sharedBannerSaveError: (error) => `Speichern fehlgeschlagen: ${error}`,
   shareLoadNotFound: 'Dieser Freigabelink ist abgelaufen oder existiert nicht.',
   shareLoadError: 'Das geteilte Diagramm konnte nicht geladen werden.',
+
+  // Mobile
+  mobileHeading: 'GanttMaker ist für den Desktop konzipiert',
+  mobileBody: 'Öffne die App auf einem Computer, um Diagramme zu erstellen und zu bearbeiten.',
+  mobileShareNote: 'Öffne auf einem Desktop, um dieses Diagramm zu bearbeiten.',
+  mobileLoading: 'Diagramm wird geladen…',
 }
 
 export const translations: Record<Locale, Translations> = { en, no, es, de }
