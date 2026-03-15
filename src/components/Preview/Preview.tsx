@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SyntaxPane } from './SyntaxPane'
 import { MermaidRenderer } from './MermaidRenderer'
+import { useLocale } from '../../i18n/LocaleContext'
 
 interface PreviewProps {
   syntax: string
@@ -10,6 +11,12 @@ type Tab = 'syntax' | 'preview'
 
 export function Preview({ syntax }: PreviewProps) {
   const [activeTab, setActiveTab] = useState<Tab>('syntax')
+  const { t } = useLocale()
+
+  const tabs: Array<{ key: Tab; label: string }> = [
+    { key: 'syntax', label: t.previewTabSyntax },
+    { key: 'preview', label: t.previewTabPreview },
+  ]
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -19,23 +26,22 @@ export function Preview({ syntax }: PreviewProps) {
         background: 'var(--color-surface)',
         flexShrink: 0,
       }}>
-        {(['syntax', 'preview'] as Tab[]).map(tab => (
+        {tabs.map(({ key, label }) => (
           <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
+            key={key}
+            onClick={() => setActiveTab(key)}
             style={{
               padding: '4px 16px',
               border: 'none',
-              borderBottom: activeTab === tab ? '2px solid var(--color-primary)' : '2px solid transparent',
+              borderBottom: activeTab === key ? '2px solid var(--color-primary)' : '2px solid transparent',
               background: 'none',
               cursor: 'pointer',
               fontSize: 12,
-              fontWeight: activeTab === tab ? 600 : 400,
-              color: activeTab === tab ? 'var(--color-primary)' : 'var(--color-text-muted)',
-              textTransform: 'capitalize',
+              fontWeight: activeTab === key ? 600 : 400,
+              color: activeTab === key ? 'var(--color-primary)' : 'var(--color-text-muted)',
             }}
           >
-            {tab}
+            {label}
           </button>
         ))}
       </div>

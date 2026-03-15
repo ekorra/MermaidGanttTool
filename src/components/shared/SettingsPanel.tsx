@@ -1,6 +1,8 @@
 import { useRef, useEffect } from 'react'
 import type { GanttChart, DateFormat } from '../../model/types'
 import { useEscapeKey } from '../../utils/useEscapeKey'
+import { useLocale } from '../../i18n/LocaleContext'
+import { LOCALE_NAMES, type Locale } from '../../i18n/translations'
 
 interface SettingsPanelProps {
   chart: GanttChart
@@ -10,6 +12,7 @@ interface SettingsPanelProps {
 
 const DATE_FORMATS: DateFormat[] = ['DD-MM-YYYY', 'DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD']
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+const LOCALES = Object.keys(LOCALE_NAMES) as Locale[]
 
 const fieldLabel: React.CSSProperties = {
   fontSize: 11,
@@ -27,21 +30,22 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid var(--color-border)',
   borderRadius: 4,
   background: 'var(--color-bg)',
+  color: 'var(--color-text)',
   fontSize: 13,
   boxSizing: 'border-box',
 }
 
 export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) {
   const closeRef = useRef<HTMLButtonElement>(null)
+  const { t, locale, setLocale } = useLocale()
   useEscapeKey(onClose)
   useEffect(() => { closeRef.current?.focus() }, [])
 
   return (
-    /* Backdrop */
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Diagraminnstillinger"
+      aria-label={t.settingsTitle}
       style={{
         position: 'fixed',
         inset: 0,
@@ -53,7 +57,6 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
       }}
       onClick={onClose}
     >
-      {/* Dialog */}
       <div
         style={{
           background: 'var(--color-surface)',
@@ -71,20 +74,34 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontWeight: 700, fontSize: 15 }}>Diagraminnstillinger</span>
+          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text)' }}>{t.settingsTitle}</span>
           <button
             ref={closeRef}
             onClick={onClose}
-            aria-label="Lukk innstillinger"
+            aria-label={t.closeButton}
             style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
           >
             ×
           </button>
         </div>
 
+        {/* Language */}
+        <div>
+          <label style={fieldLabel}>{t.languageLabel}</label>
+          <select
+            value={locale}
+            onChange={e => setLocale(e.target.value as Locale)}
+            style={inputStyle}
+          >
+            {LOCALES.map(l => (
+              <option key={l} value={l}>{LOCALE_NAMES[l]}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Date format */}
         <div>
-          <label style={fieldLabel}>Datoformat</label>
+          <label style={fieldLabel}>{t.dateFormatLabel}</label>
           <select
             value={chart.dateFormat}
             onChange={e => onUpdate({ dateFormat: e.target.value as DateFormat })}
@@ -96,7 +113,7 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
 
         {/* Axis format */}
         <div>
-          <label style={fieldLabel}>Akseformat</label>
+          <label style={fieldLabel}>{t.axisFormatLabel}</label>
           <input
             type="text"
             value={chart.axisFormat}
@@ -105,13 +122,13 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
             style={inputStyle}
           />
           <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>
-            strftime-format, f.eks. %b %d, %Y-%m-%d
+            {t.axisFormatHint}
           </span>
         </div>
 
         {/* Tick interval */}
         <div>
-          <label style={fieldLabel}>Tikkintervall</label>
+          <label style={fieldLabel}>{t.tickIntervalLabel}</label>
           <input
             type="text"
             value={chart.tickInterval ?? ''}
@@ -120,13 +137,13 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
             style={inputStyle}
           />
           <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>
-            f.eks. 1day, 1week, 1month
+            {t.tickIntervalHint}
           </span>
         </div>
 
         {/* Excludes */}
         <div>
-          <label style={fieldLabel}>Ekskluder</label>
+          <label style={fieldLabel}>{t.excludesLabel}</label>
           <input
             type="text"
             value={chart.excludes ?? ''}
@@ -135,19 +152,19 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
             style={inputStyle}
           />
           <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>
-            f.eks. weekends, monday, 2025-12-25
+            {t.excludesHint}
           </span>
         </div>
 
         {/* Weekday */}
         <div>
-          <label style={fieldLabel}>Ukestart</label>
+          <label style={fieldLabel}>{t.weekdayLabel}</label>
           <select
             value={chart.weekday ?? ''}
             onChange={e => onUpdate({ weekday: e.target.value || null })}
             style={inputStyle}
           >
-            <option value="">— standard (søndag) —</option>
+            <option value="">{t.weekdayDefault}</option>
             {WEEKDAYS.map(d => (
               <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>
             ))}
@@ -162,7 +179,7 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
               checked={chart.todayMarker}
               onChange={e => onUpdate({ todayMarker: e.target.checked })}
             />
-            <span style={{ fontSize: 13 }}>Vis «Today»-linje</span>
+            <span style={{ fontSize: 13, color: 'var(--color-text)' }}>{t.todayMarkerLabel}</span>
           </label>
         </div>
 
@@ -181,7 +198,7 @@ export function SettingsPanel({ chart, onUpdate, onClose }: SettingsPanelProps) 
             cursor: 'pointer',
           }}
         >
-          Lukk
+          {t.closeButton}
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { resolveTaskPositions } from '../../utils/taskPositions'
 import { formatDate, addDays, diffDays } from '../../utils/dateUtils'
 import { parseDurationDays } from '../../utils/durationUtils'
 import { isDarkActive } from '../../utils/theme'
+import { useLocale } from '../../i18n/LocaleContext'
 import { TimelineHeader, HEADER_HEIGHT } from './TimelineHeader'
 import { TaskBar } from './TaskBar'
 import { MilestoneMarker, TASK_ROW_HEIGHT } from './MilestoneMarker'
@@ -48,6 +49,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
   const allTasks = chart.sections.flatMap(s => s.tasks)
 
   const isDark = isDarkActive()
+  const { t } = useLocale()
 
   return (
     <div style={{ overflow: 'auto', height: '100%', position: 'relative', background: 'var(--canvas-bg)' }}>
@@ -150,7 +152,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
                     ? diffDays(newStart, new Date(task.endDate))
                     : (task.duration ? parseDurationDays(task.duration) : 1) - deltaDays
                   if (newDays <= 0) {
-                    const confirmed = window.confirm(`"${task.label}" ville bli 0 dager eller kortere. Vil du slette oppgaven?`)
+                    const confirmed = window.confirm(t.taskWouldBeZero(task.label))
                     if (confirmed) deleteTask(row.sectionId, task.id)
                     return
                   }
@@ -191,7 +193,7 @@ export function Canvas({ store, selectedTaskId, onSelectTask }: CanvasProps) {
         {todayX !== null && todayX >= 0 && todayX <= scale.canvasWidth && (
           <g data-today-marker="true" style={{ pointerEvents: 'none' }}>
             <line x1={todayX} y1={0} x2={todayX} y2={svgHeight} stroke="#ff6b6b" strokeWidth={1.5} strokeDasharray="4 3" />
-            <text x={todayX + 4} y={12} fontSize={10} fill="#ff6b6b" fontWeight={600}>Today</text>
+            <text x={todayX + 4} y={12} fontSize={10} fill="#ff6b6b" fontWeight={600}>{t.todayLabel}</text>
           </g>
         )}
       </svg>

@@ -3,6 +3,7 @@ import './styles/global.css'
 import { isDarkActive, toggleTheme } from './utils/theme'
 import { useGanttStore } from './state/useGanttStore'
 import { parseGantt, isMermaidGantt } from './model/import'
+import { useLocale } from './i18n/LocaleContext'
 import { Toolbar } from './components/shared/Toolbar'
 import { SettingsPanel } from './components/shared/SettingsPanel'
 import { InfoPanel } from './components/shared/InfoPanel'
@@ -28,6 +29,7 @@ function loadPreviewState(): { open: boolean; height: number } {
 
 export function App() {
   const store = useGanttStore()
+  const { t } = useLocale()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
@@ -83,19 +85,19 @@ export function App() {
     try {
       text = await navigator.clipboard.readText()
     } catch {
-      alert('Could not read clipboard. Make sure the browser has clipboard permission.')
+      alert(t.clipboardReadError)
       return
     }
     if (!isMermaidGantt(text)) {
-      alert('No Mermaid Gantt diagram found in clipboard.')
+      alert(t.noMermaidInClipboard)
       return
     }
     const parsed = parseGantt(text)
     if (!parsed) {
-      alert('Could not parse the Mermaid Gantt diagram in clipboard.')
+      alert(t.mermaidParseError)
       return
     }
-    if (window.confirm('Import Mermaid Gantt from clipboard? This will replace the current diagram.')) {
+    if (window.confirm(t.importConfirm)) {
       store.replaceChart(parsed)
       setSelectedTaskId(null)
     }

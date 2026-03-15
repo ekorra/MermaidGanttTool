@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useLocale } from '../../i18n/LocaleContext'
 
 interface EditableLabelProps {
   value: string
@@ -12,6 +13,7 @@ interface EditableLabelProps {
  * Commits on blur or Enter, cancels on Escape.
  */
 export function EditableLabel({ value, onChange, placeholder, style }: EditableLabelProps) {
+  const { t } = useLocale()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -63,7 +65,7 @@ export function EditableLabel({ value, onChange, placeholder, style }: EditableL
   return (
     <span
       onDoubleClick={() => setEditing(true)}
-      title="Double-click to edit"
+      title={t.doubleClickToEdit}
       style={{
         cursor: 'text',
         borderRadius: 3,

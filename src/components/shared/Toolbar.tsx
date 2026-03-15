@@ -1,3 +1,5 @@
+import { useLocale } from '../../i18n/LocaleContext'
+
 interface ToolbarProps {
   title: string
   onTitleChange: (title: string) => void
@@ -13,6 +15,8 @@ interface ToolbarProps {
 }
 
 export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onExport, onImport, onExportPng, previewOpen, onTogglePreview, isDark, onToggleTheme }: ToolbarProps) {
+  const { t } = useLocale()
+
   return (
     <header style={{
       height: 'var(--toolbar-height)',
@@ -32,7 +36,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         type="text"
         value={title}
         onChange={e => onTitleChange(e.target.value)}
-        placeholder="Project title"
+        placeholder={t.projectTitlePlaceholder}
         style={{
           flex: 1,
           maxWidth: 280,
@@ -46,8 +50,8 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
 
       <button
         onClick={onSettingsOpen}
-        title="Diagraminnstillinger"
-        aria-label="Diagraminnstillinger"
+        title={t.settingsLabel}
+        aria-label={t.settingsLabel}
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',
@@ -66,8 +70,8 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
 
       <button
         onClick={onInfoOpen}
-        title="Om appen"
-        aria-label="Om appen"
+        title={t.infoLabel}
+        aria-label={t.infoLabel}
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',
@@ -87,8 +91,8 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
 
       <button
         onClick={onToggleTheme}
-        title={isDark ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
-        aria-label={isDark ? 'Bytt til lyst tema' : 'Bytt til mørkt tema'}
+        title={isDark ? t.switchToLight : t.switchToDark}
+        aria-label={isDark ? t.switchToLight : t.switchToDark}
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',
@@ -107,8 +111,8 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
 
       <button
         onClick={onImport}
-        title="Paste Mermaid from clipboard"
-        aria-label="Paste Mermaid from clipboard"
+        title={t.pasteMermaid}
+        aria-label={t.pasteMermaid}
         style={{
           padding: '5px 10px',
           border: '1px solid var(--color-border)',
@@ -123,14 +127,14 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
         onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
       >
-        Paste Mermaid
+        {t.pasteMermaid}
       </button>
 
       {/* Preview toggle */}
       <button
         data-testid="preview-toggle"
         onClick={onTogglePreview}
-        title={previewOpen ? 'Skjul preview' : 'Vis preview'}
+        title={previewOpen ? t.hidePreview : t.showPreview}
         style={{
           padding: '5px 12px',
           border: '1px solid var(--color-border)',
@@ -165,7 +169,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
         onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
       >
-        Download PNG
+        {t.downloadPng}
       </button>
 
       <button
@@ -179,9 +183,8 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
           fontWeight: 500,
         }}
         onMouseOver={e => (e.currentTarget.style.background = 'var(--color-primary-hover)')}
-        onMouseOut={e => (e.currentTarget.style.background = 'var(--color-primary)')}
-      >
-        Copy Mermaid
+        onMouseOut={e => (e.currentTarget.style.background = 'var(--color-primary)')}>
+        {t.copyMermaid}
       </button>
     </header>
   )

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocale } from '../../i18n/LocaleContext'
 
 interface SyntaxPaneProps {
   syntax: string
@@ -6,6 +7,7 @@ interface SyntaxPaneProps {
 
 export function SyntaxPane({ syntax }: SyntaxPaneProps) {
   const [copied, setCopied] = useState(false)
+  const { t } = useLocale()
 
   const handleCopy = () => {
     void navigator.clipboard.writeText(syntax).then(() => {
@@ -26,7 +28,7 @@ export function SyntaxPane({ syntax }: SyntaxPaneProps) {
         flexShrink: 0,
       }}>
         <span style={{ fontWeight: 500, fontSize: 12, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Mermaid Syntax
+          {t.syntaxPaneTitle}
         </span>
         <button
           onClick={handleCopy}
@@ -40,7 +42,7 @@ export function SyntaxPane({ syntax }: SyntaxPaneProps) {
             transition: 'background 0.15s',
           }}
         >
-          {copied ? 'Copied!' : 'Copy'}
+          {copied ? t.copiedButton : t.copyButton}
         </button>
       </div>
       <textarea

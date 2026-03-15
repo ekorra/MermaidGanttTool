@@ -3,6 +3,7 @@ import { useEscapeKey } from '../../utils/useEscapeKey'
 import { useTimelineScale } from '../../hooks/useTimelineScale'
 import { isDarkActive } from '../../utils/theme'
 import { exportPng } from '../../utils/exportPng'
+import { useLocale } from '../../i18n/LocaleContext'
 import type { GanttChart } from '../../model/types'
 
 interface ExportPngModalProps {
@@ -16,20 +17,21 @@ export function ExportPngModal({ chart, onClose }: ExportPngModalProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const scale = useTimelineScale(chart.sections)
+  const { t } = useLocale()
 
   useEscapeKey(onClose)
   useEffect(() => { closeRef.current?.focus() }, [])
 
   const handleDownload = async () => {
     const svgEl = document.querySelector<SVGSVGElement>('[data-testid="canvas-svg"]')
-    if (!svgEl) { setError('Canvas not found — make sure the diagram is visible.'); return }
+    if (!svgEl) { setError(t.exportPngCanvasNotFound); return }
     setLoading(true)
     setError(null)
     try {
       await exportPng({ svgEl, scale, title: chart.title, includeTodayMarker, isDark: isDarkActive() })
       onClose()
     } catch (e) {
-      setError(String(e))
+      setError(t.exportPngFailed(String(e)))
     } finally {
       setLoading(false)
     }
@@ -39,7 +41,7 @@ export function ExportPngModal({ chart, onClose }: ExportPngModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Export as PNG"
+      aria-label={t.exportPngTitle}
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0,
@@ -62,11 +64,11 @@ export function ExportPngModal({ chart, onClose }: ExportPngModalProps) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text)' }}>Export as PNG</span>
+          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--color-text)' }}>{t.exportPngTitle}</span>
           <button
             ref={closeRef}
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t.closeButton}
             style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
           >
             ×
@@ -79,11 +81,11 @@ export function ExportPngModal({ chart, onClose }: ExportPngModalProps) {
             checked={includeTodayMarker}
             onChange={e => setIncludeTodayMarker(e.target.checked)}
           />
-          Include today marker
+          {t.exportPngTodayMarkerLabel}
         </label>
 
         <p style={{ fontSize: 11, color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.5 }}>
-          Exports at 2× resolution. Background is transparent.
+          {t.exportPngHint}
         </p>
 
         {error && (
@@ -104,7 +106,7 @@ export function ExportPngModal({ chart, onClose }: ExportPngModalProps) {
             opacity: loading ? 0.7 : 1,
           }}
         >
-          {loading ? 'Exporting…' : 'Download PNG'}
+          {loading ? t.exportPngLoading : t.exportPngDownload}
         </button>
       </div>
     </div>

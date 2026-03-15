@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import type { GanttStore } from '../../state/useGanttStore'
 import { EditableLabel } from '../shared/EditableLabel'
 import { DEFAULT_TASK_COLOR } from '../../utils/colors'
+import { useLocale } from '../../i18n/LocaleContext'
 
 interface TaskListProps {
   store: GanttStore
@@ -9,17 +10,28 @@ interface TaskListProps {
   onSelectTask: (id: string | null) => void
 }
 
-const STATUS_BADGE: Record<string, { label: string; bg: string; color: string }> = {
-  active:       { label: 'active',    bg: 'var(--badge-active-bg)',    color: 'var(--badge-active-color)' },
-  done:         { label: 'done',      bg: 'var(--badge-done-bg)',      color: 'var(--badge-done-color)' },
-  crit:         { label: 'crit',      bg: 'var(--badge-crit-bg)',      color: 'var(--badge-crit-color)' },
-  'crit+active':{ label: 'crit',      bg: 'var(--badge-crit-bg)',      color: 'var(--badge-crit-color)' },
-  'crit+done':  { label: 'crit/done', bg: 'var(--badge-critdone-bg)',  color: 'var(--badge-critdone-color)' },
-  milestone:    { label: 'milestone', bg: 'var(--badge-milestone-bg)', color: 'var(--badge-milestone-color)' },
+const STATUS_BADGE: Record<string, { bg: string; color: string }> = {
+  active:       { bg: 'var(--badge-active-bg)',    color: 'var(--badge-active-color)' },
+  done:         { bg: 'var(--badge-done-bg)',      color: 'var(--badge-done-color)' },
+  crit:         { bg: 'var(--badge-crit-bg)',      color: 'var(--badge-crit-color)' },
+  'crit+active':{ bg: 'var(--badge-crit-bg)',      color: 'var(--badge-crit-color)' },
+  'crit+done':  { bg: 'var(--badge-critdone-bg)',  color: 'var(--badge-critdone-color)' },
+  milestone:    { bg: 'var(--badge-milestone-bg)', color: 'var(--badge-milestone-color)' },
+}
+
+// Badge labels come from translation keys (set in TaskList render)
+const STATUS_BADGE_KEY: Record<string, string> = {
+  active: 'taskStatusActive',
+  done: 'taskStatusDone',
+  crit: 'taskStatusCrit',
+  'crit+active': 'taskStatusCrit',
+  'crit+done': 'taskStatusCritDone',
+  milestone: 'taskStatusMilestone',
 }
 
 export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps) {
   const { chart, addSection, updateSection, deleteSection, addTask, updateTask } = store
+  const { t } = useLocale()
   const [renamingTaskId, setRenamingTaskId] = useState<string | null>(null)
   const [renameDraft, setRenameDraft] = useState('')
   const renameInputRef = useRef<HTMLInputElement>(null)
@@ -27,7 +39,6 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
   const startRename = (taskId: string, currentLabel: string) => {
     setRenamingTaskId(taskId)
     setRenameDraft(currentLabel)
-    // focus is handled by autoFocus on the input
   }
 
   const commitRename = (sectionId: string, taskId: string) => {
@@ -38,7 +49,6 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
 
   const cancelRename = () => setRenamingTaskId(null)
 
-  // Check if an ungrouped section (empty title) already exists
   const hasUngrouped = chart.sections.some(s => s.title === '')
 
   return (
@@ -55,7 +65,6 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
     >
       {chart.sections.map(section => (
         <div key={section.id}>
-          {/* Section header — hidden for ungrouped (empty title) sections */}
           {section.title !== '' ? (
             <div style={{
               display: 'flex',
@@ -68,13 +77,13 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
               <EditableLabel
                 value={section.title}
                 onChange={title => updateSection(section.id, { title })}
-                placeholder="Section name"
+                placeholder={t.sectionNamePlaceholder}
                 style={{ flex: 1, fontSize: 12, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}
               />
               <button
                 onClick={() => deleteSection(section.id)}
-                title="Delete section"
-                aria-label={`Slett seksjon ${section.title}`}
+                title={t.deleteSectionTitle}
+                aria-label={t.deleteSectionAriaLabel(section.title)}
                 style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 15, cursor: 'pointer', padding: '0 2px', lineHeight: 1 }}
               >
                 ×
@@ -89,12 +98,12 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
               marginBottom: 2,
             }}>
               <span style={{ fontSize: 11, color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-                Ingen seksjon
+                {t.ungroupedSectionLabel}
               </span>
               <button
                 onClick={() => deleteSection(section.id)}
-                title="Delete ungrouped section"
-                aria-label="Slett seksjon uten navn"
+                title={t.deleteUngroupedTitle}
+                aria-label={t.deleteUngroupedAriaLabel}
                 style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: 13, cursor: 'pointer', lineHeight: 1 }}
               >
                 ×
@@ -102,11 +111,12 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
             </div>
           )}
 
-          {/* Task rows */}
           {section.tasks.map(task => {
             const isSelected = task.id === selectedTaskId
             const dotColor = task.color ?? DEFAULT_TASK_COLOR
-            const badge = task.status ? STATUS_BADGE[task.status] : null
+            const badgeStyle = task.status ? STATUS_BADGE[task.status] : null
+            const badgeKey = task.status ? STATUS_BADGE_KEY[task.status] : null
+            const badgeLabel = badgeKey ? (t as unknown as Record<string, string>)[badgeKey] : null
 
             return (
               <div
@@ -171,29 +181,28 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
                       e.stopPropagation()
                       startRename(task.id, task.label)
                     }}
-                    title="Double-click to rename"
+                    title={t.doubleClickToRename}
                   >
                     {task.label}
                   </span>
                 )}
-                {badge && (
+                {badgeStyle && badgeLabel && (
                   <span style={{
                     fontSize: 10,
                     padding: '1px 5px',
                     borderRadius: 3,
-                    background: isSelected ? 'rgba(255,255,255,0.25)' : badge.bg,
-                    color: isSelected ? '#fff' : badge.color,
+                    background: isSelected ? 'rgba(255,255,255,0.25)' : badgeStyle.bg,
+                    color: isSelected ? '#fff' : badgeStyle.color,
                     fontWeight: 600,
                     flexShrink: 0,
                   }}>
-                    {badge.label}
+                    {badgeLabel}
                   </span>
                 )}
               </div>
             )
           })}
 
-          {/* Add task */}
           <button
             data-testid="add-task"
             onClick={() => addTask(section.id)}
@@ -213,12 +222,11 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
             onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
             onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
           >
-            + Ny oppgave
+            {t.addTask}
           </button>
         </div>
       ))}
 
-      {/* Add section */}
       <button
         data-testid="add-section"
         onClick={() => addSection()}
@@ -236,17 +244,14 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
         onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
         onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
       >
-        + Ny seksjon
+        {t.addSection}
       </button>
 
-      {/* Add ungrouped task (only if no ungrouped section exists yet) */}
       {!hasUngrouped && (
         <button
           onClick={() => {
-            // Create an ungrouped section and immediately add a task
             const { addSection: as, addTask: at } = store
             as('')
-            // The new section is appended — find it after state update via setTimeout
             setTimeout(() => {
               const ungrouped = store.chart.sections.find(s => s.title === '')
               if (ungrouped) at(ungrouped.id)
@@ -265,7 +270,7 @@ export function TaskList({ store, selectedTaskId, onSelectTask }: TaskListProps)
           onMouseOver={e => (e.currentTarget.style.borderColor = 'var(--color-primary)')}
           onMouseOut={e => (e.currentTarget.style.borderColor = 'var(--color-border)')}
         >
-          + Oppgave uten seksjon
+          {t.addUngroupedTask}
         </button>
       )}
     </div>

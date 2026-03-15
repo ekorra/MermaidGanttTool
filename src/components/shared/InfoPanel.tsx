@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import { useEscapeKey } from '../../utils/useEscapeKey'
+import { useLocale } from '../../i18n/LocaleContext'
 
 interface InfoPanelProps {
   onClose: () => void
@@ -7,6 +8,7 @@ interface InfoPanelProps {
 
 export function InfoPanel({ onClose }: InfoPanelProps) {
   const closeRef = useRef<HTMLButtonElement>(null)
+  const { t } = useLocale()
   useEscapeKey(onClose)
   useEffect(() => { closeRef.current?.focus() }, [])
 
@@ -14,7 +16,7 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Om MermaidGanttTool"
+      aria-label={t.infoTitle}
       onClick={onClose}
       style={{
         position: 'fixed',
@@ -44,76 +46,58 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontWeight: 700, fontSize: 16 }}>Om MermaidGanttTool</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--color-text)' }}>{t.infoTitle}</span>
           <button
             ref={closeRef}
             onClick={onClose}
-            aria-label="Lukk"
+            aria-label={t.closeButton}
             style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
           >
             ×
           </button>
         </div>
 
-        {/* What is it */}
+        {/* Description */}
         <section>
           <p style={{ color: 'var(--color-text)', lineHeight: 1.6 }}>
-            Et visuelt verktøy for å lage <strong>Mermaid Gantt-diagrammer</strong>. Tegn tidslinjen
-            visuelt, og eksporter gyldig Mermaid-syntaks klar til å lime inn i GitHub,
-            Confluence eller annen Markdown-basert dokumentasjon.
+            {t.infoDescription}
           </p>
         </section>
 
         {/* Features */}
         <section>
           <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-            Funksjoner
+            {t.infoFeaturesHeading}
           </h3>
           <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, color: 'var(--color-text)', lineHeight: 1.5 }}>
-            <li>Visuell redigering — legg til seksjoner og oppgaver med et skjemapanel</li>
-            <li>Dra for å flytte oppgaver, dra høyre kant for å endre varighet</li>
-            <li>Avhengigheter — koble oppgaver med «starter etter» og se piler i tidslinjen</li>
-            <li>Milepæler — vises som diamanter</li>
-            <li>Statustyper: active, done, crit, crit+active, crit+done, milestone</li>
-            <li>Klikk-lenker — åpner URL fra canvas når du klikker en oppgave</li>
-            <li>Oppgaver uten seksjon (ungrouped)</li>
-            <li>Innstillinger: datoformat, ukestart, ekskluderinger, today marker</li>
-            <li>Eksporter Mermaid-syntaks med ett klikk</li>
-            <li>Importer Mermaid Gantt fra utklippstavlen med «Paste Mermaid»</li>
-            <li>Diagrammet lagres automatisk i nettleseren (localStorage)</li>
-            <li>Mørkt og lyst tema</li>
+            {t.infoFeatures.map((item, i) => <li key={i}>{item}</li>)}
           </ul>
         </section>
 
         {/* Limitations */}
         <section>
           <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-            Begrensninger
+            {t.infoLimitationsHeading}
           </h3>
           <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, color: 'var(--color-text)', lineHeight: 1.5 }}>
-            <li><strong>Farger er kun visuelle</strong> — de eksporteres ikke til Mermaid-syntaksen</li>
-            <li>Ingen PNG-eksport (planlagt)</li>
-            <li>Lagring kun lokalt i nettleseren — ikke synkronisert mellom enheter</li>
+            {t.infoLimitations.map((item, i) => <li key={i}>{item}</li>)}
           </ul>
         </section>
 
         {/* Why Mermaid */}
         <section>
           <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-            Hvorfor Mermaid.js?
+            {t.infoWhyHeading}
           </h3>
           <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, color: 'var(--color-text)', lineHeight: 1.5 }}>
-            <li>Diagram-som-tekst — versjonskontrollvennlig, diff-bart</li>
-            <li>Innebygd støtte i GitHub, GitLab, Notion, Confluence og flere</li>
-            <li>Ingen bildefiler å holde oppdatert</li>
-            <li>Åpen kildekode og aktivt vedlikeholdt</li>
+            {t.infoWhy.map((item, i) => <li key={i}>{item}</li>)}
           </ul>
         </section>
 
         {/* Support */}
         <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: 16, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <p style={{ fontSize: 12, color: 'var(--color-text-muted)', textAlign: 'center' }}>
-            Liker du verktøyet? Du kan støtte videre utvikling:
+            {t.infoSupportText}
           </p>
           {/* TODO: replace YOUR_USERNAME with your Buy Me a Coffee username after creating an account at https://www.buymeacoffee.com */}
           <a
@@ -132,27 +116,27 @@ export function InfoPanel({ onClose }: InfoPanelProps) {
         {/* Links */}
         <section>
           <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-            Lenker
+            {t.infoLinksHeading}
           </h3>
           <ul style={{ paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, lineHeight: 1.5 }}>
             <li>
               <a href="https://mermaid.js.org/syntax/gantt.html" target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)' }}>
-                Mermaid Gantt-spesifikasjon
+                {t.infoLinkMermaidSpec}
               </a>
             </li>
             <li>
               <a href="https://mermaid.js.org" target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)' }}>
-                Mermaid.js hjemmeside
+                {t.infoLinkMermaidHome}
               </a>
             </li>
             <li>
               <a href="https://github.com/ekorra/MermaidGanttTool" target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)' }}>
-                MermaidGanttTool på GitHub
+                {t.infoLinkGitHub}
               </a>
             </li>
             <li>
               <a href="https://github.com/ekorra/MermaidGanttTool/issues" target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)' }}>
-                Rapporter en feil eller forslag
+                {t.infoLinkBugs}
               </a>
             </li>
           </ul>
