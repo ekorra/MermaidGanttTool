@@ -140,7 +140,7 @@ const en: Translations = {
   closeButton: 'Close',
 
   // Info panel
-  infoTitle: 'About MermaidGanttTool',
+  infoTitle: 'About GanttMaker',
   infoDescription: 'A visual tool for creating Mermaid Gantt diagrams. Draw the timeline visually and export valid Mermaid syntax ready to paste into GitHub, Confluence, or other Markdown-based documentation.',
   infoFeaturesHeading: 'Features',
   infoFeatures: [
@@ -173,7 +173,7 @@ const en: Translations = {
   infoLinksHeading: 'Links',
   infoLinkMermaidSpec: 'Mermaid Gantt specification',
   infoLinkMermaidHome: 'Mermaid.js homepage',
-  infoLinkGitHub: 'MermaidGanttTool on GitHub',
+  infoLinkGitHub: 'GanttMaker on GitHub',
   infoLinkBugs: 'Report a bug or suggestion',
 
   // Export PNG modal
@@ -272,7 +272,7 @@ const no: Translations = {
   closeButton: 'Lukk',
 
   // Info panel
-  infoTitle: 'Om MermaidGanttTool',
+  infoTitle: 'Om GanttMaker',
   infoDescription: 'Et visuelt verktøy for å lage Mermaid Gantt-diagrammer. Tegn tidslinjen visuelt, og eksporter gyldig Mermaid-syntaks klar til å lime inn i GitHub, Confluence eller annen Markdown-basert dokumentasjon.',
   infoFeaturesHeading: 'Funksjoner',
   infoFeatures: [
@@ -305,7 +305,7 @@ const no: Translations = {
   infoLinksHeading: 'Lenker',
   infoLinkMermaidSpec: 'Mermaid Gantt-spesifikasjon',
   infoLinkMermaidHome: 'Mermaid.js hjemmeside',
-  infoLinkGitHub: 'MermaidGanttTool på GitHub',
+  infoLinkGitHub: 'GanttMaker på GitHub',
   infoLinkBugs: 'Rapporter en feil eller forslag',
 
   // Export PNG modal
@@ -404,7 +404,7 @@ const es: Translations = {
   closeButton: 'Cerrar',
 
   // Info panel
-  infoTitle: 'Acerca de MermaidGanttTool',
+  infoTitle: 'Acerca de GanttMaker',
   infoDescription: 'Una herramienta visual para crear diagramas de Gantt en Mermaid. Dibuja la línea de tiempo visualmente y exporta sintaxis Mermaid válida lista para pegar en GitHub, Confluence u otra documentación basada en Markdown.',
   infoFeaturesHeading: 'Características',
   infoFeatures: [
@@ -437,7 +437,7 @@ const es: Translations = {
   infoLinksHeading: 'Enlaces',
   infoLinkMermaidSpec: 'Especificación Mermaid Gantt',
   infoLinkMermaidHome: 'Página web de Mermaid.js',
-  infoLinkGitHub: 'MermaidGanttTool en GitHub',
+  infoLinkGitHub: 'GanttMaker en GitHub',
   infoLinkBugs: 'Reportar un error o sugerencia',
 
   // Export PNG modal
@@ -536,7 +536,7 @@ const de: Translations = {
   closeButton: 'Schließen',
 
   // Info panel
-  infoTitle: 'Über MermaidGanttTool',
+  infoTitle: 'Über GanttMaker',
   infoDescription: 'Ein visuelles Werkzeug zum Erstellen von Mermaid-Gantt-Diagrammen. Zeichne die Zeitlinie visuell und exportiere gültige Mermaid-Syntax zum Einfügen in GitHub, Confluence oder andere Markdown-basierte Dokumentation.',
   infoFeaturesHeading: 'Funktionen',
   infoFeatures: [
@@ -569,7 +569,7 @@ const de: Translations = {
   infoLinksHeading: 'Links',
   infoLinkMermaidSpec: 'Mermaid-Gantt-Spezifikation',
   infoLinkMermaidHome: 'Mermaid.js-Startseite',
-  infoLinkGitHub: 'MermaidGanttTool auf GitHub',
+  infoLinkGitHub: 'GanttMaker auf GitHub',
   infoLinkBugs: 'Fehler oder Vorschlag melden',
 
   // Export PNG modal

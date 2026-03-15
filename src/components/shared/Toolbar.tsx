@@ -29,7 +29,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
       flexShrink: 0,
     }}>
       <span style={{ fontWeight: 600, color: 'var(--color-primary)', marginRight: 4 }}>
-        MermaidGantt
+        GanttMaker
       </span>
 
       <input
