@@ -1,4 +1,5 @@
 import { useLocale } from '../../i18n/LocaleContext'
+import { Icon } from './Icon'
 
 interface ToolbarProps {
   title: string
@@ -14,25 +15,23 @@ interface ToolbarProps {
 }
 
 const btnStyle: React.CSSProperties = {
-  padding: '5px 10px',
+  padding: '6px 8px',
   border: '1px solid var(--color-border)',
   borderRadius: 4,
   background: 'var(--color-bg)',
   color: 'var(--color-text-muted)',
-  fontSize: 14,
   lineHeight: 1,
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
-  gap: 5,
-  whiteSpace: 'nowrap',
+  justifyContent: 'center',
 }
 
 const divider: React.CSSProperties = {
   width: 1,
   alignSelf: 'stretch',
   background: 'var(--color-border)',
-  margin: '6px 4px',
+  margin: '8px 4px',
   flexShrink: 0,
 }
 
@@ -51,7 +50,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
       background: 'var(--color-surface)',
       display: 'flex',
       alignItems: 'center',
-      gap: 8,
+      gap: 6,
       padding: '0 12px',
       flexShrink: 0,
     }}>
@@ -87,7 +86,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={hover}
         onMouseOut={unhover}
       >
-        📋 <span style={{ fontSize: 12 }}>{t.pasteMermaid}</span>
+        <Icon name="content_paste" />
       </button>
 
       <button
@@ -98,7 +97,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={hover}
         onMouseOut={unhover}
       >
-        📤 <span style={{ fontSize: 12 }}>{t.copyMermaid}</span>
+        <Icon name="content_copy" />
       </button>
 
       {/* ── Export / share group ── */}
@@ -112,7 +111,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={hover}
         onMouseOut={unhover}
       >
-        ⬇ <span style={{ fontSize: 12 }}>{t.downloadPng}</span>
+        <Icon name="download" />
       </button>
 
       <button
@@ -123,13 +122,14 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={hover}
         onMouseOut={unhover}
       >
-        🔗 <span style={{ fontSize: 12 }}>{t.shareButton}</span>
+        <Icon name="share" />
       </button>
 
       <button
         data-testid="preview-toggle"
         onClick={onTogglePreview}
         title={previewOpen ? t.hidePreview : t.showPreview}
+        aria-label={previewOpen ? t.hidePreview : t.showPreview}
         style={{
           ...btnStyle,
           background: previewOpen ? 'var(--color-primary)' : 'var(--color-bg)',
@@ -139,7 +139,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={e => { if (!previewOpen) hover(e) }}
         onMouseOut={e => { if (!previewOpen) unhover(e) }}
       >
-        <span style={{ fontSize: 12 }}>Preview</span> {previewOpen ? '▼' : '▲'}
+        <Icon name="preview" />
       </button>
 
       {/* ── App group (pushed right) ── */}
@@ -153,7 +153,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={hover}
         onMouseOut={unhover}
       >
-        ⚙
+        <Icon name="settings" />
       </button>
 
       <button
@@ -164,7 +164,7 @@ export function Toolbar({ title, onTitleChange, onSettingsOpen, onInfoOpen, onEx
         onMouseOver={hover}
         onMouseOut={unhover}
       >
-        ℹ
+        <Icon name="info" />
       </button>
     </header>
   )
